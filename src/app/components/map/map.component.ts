@@ -57,6 +57,15 @@ export class MapComponent implements OnInit {
 
       const newMarker: any = this.map.pm.Toolbar.copyDrawControl('drawMarker', { name: "newMarker" })
       newMarker.drawInstance.setOptions({ markerStyle: { icon: this.iconMarker("#00b8e6") } });
+
+      this.map.pm.Toolbar.createCustomControl({
+        name: "import",
+        title: "Cargar GeoJSON",
+        className: 'upload-map',
+        onClick: () => {
+          console.log("Upload clicked")
+        }
+      });
     }
   }
 
