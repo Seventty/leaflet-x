@@ -1,6 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import "@geoman-io/leaflet-geoman-free";
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { IModalConfig } from 'src/app/shared/modal/IModalConfig';
+import { IModalOption } from 'src/app/shared/modal/IModalOptions';
+import { ModalComponent } from 'src/app/shared/modal/modal.component';
 
 @Component({
   selector: 'app-map',
@@ -13,6 +17,17 @@ export class MapComponent implements OnInit {
   private defaultZoomLevel: number = 8;
   private defaultMaxZoom: number = 18
   private defaultMinZoom: number = 3
+  @ViewChild("uploadModal") uploadModal?: ModalComponent
+
+  modalConfig: IModalConfig = {
+    modalTitle: 'Cargar GeoJSON',
+    dashboardHeader: true,
+  }
+
+  modalOption: IModalOption = {
+    centered: true,
+    size: 'lg',
+  }
 
   private initMap(): void {
     this.map = L.map('map', {
@@ -63,7 +78,7 @@ export class MapComponent implements OnInit {
         title: "Cargar GeoJSON",
         className: 'upload-map',
         onClick: () => {
-          console.log("Upload clicked")
+          this.openUploadFileMapModal()
         }
       });
     }
@@ -104,6 +119,10 @@ export class MapComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.initMap()
+  }
+
+  openUploadFileMapModal() {
+    this.uploadModal?.open()
   }
 
 }

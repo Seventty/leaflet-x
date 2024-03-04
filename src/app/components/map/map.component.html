@@ -4,19 +4,7 @@
   </div>
 </div>
 
-<ng-template #uploadFileMapModal let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">GeoCarga De Archivos</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-   <!--  <form>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-light" (click)="closeModal()">Cerrar</button>
-        <button type="button" class="btn btn-primary" (click)="uploadFiles(modalCargando)">Importar al mapa</button>
-      </div>
-    </form> -->
-  </div>
-</ng-template>
+<UIModal [modalConfig]="modalConfig" [modalOption]="modalOption" #uploadModal>
+  <h1>Hello world</h1>
+</UIModal>
+
