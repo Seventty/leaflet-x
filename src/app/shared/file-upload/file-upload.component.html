@@ -1,8 +1,8 @@
-<!-- <div class="py-5 mb-3 text-center font-medium-5 text-uppercase grey my-drop-zone"
-  [ngClass]="{'nv-file-over': hasBaseDropZoneOver}" ng2FileDrop [uploader]=uploader
+<div class="py-5 mb-3 text-center font-medium-5 text-uppercase grey my-drop-zone"
+  [ngClass]="{'nv-file-over': hasBaseDropZoneOver}" ng2FileDrop [uploader]="uploader"
   (fileOver)="fileOverBase($event)" (onFileDrop)="addedFileToQueue()">
     <span class="d-block">Arrastre un archivo o hacer click en el botón</span>
-    <UIButton color="primary" size="sm" [block]="false" (click)="handleFile(fileInput)"><i class="ft-search"></i> Buscar Archivo</UIButton>
+    <button color="primary" size="sm" (click)="handleFile(fileInput)"><i class="ft-search"></i> Buscar Archivo</button>
     <input #fileInput type="file" ng2FileSelect [uploader]="uploader" [hidden]="true" [multiple]="multiple" [accept]="mimeType"
       (onFileSelected)="addedFileToQueue()">
 </div>
@@ -29,4 +29,3 @@
     </tbody>
   </table>
 </div>
- -->

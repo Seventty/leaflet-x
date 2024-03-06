@@ -51,7 +51,7 @@ export class MapComponent implements OnInit {
   }
 
   private geomanControllers() {
-    if(this.map){
+    if (this.map) {
       L.control.zoom({
         position: "topright",
         zoomInTitle: 'Acercar',
@@ -73,13 +73,33 @@ export class MapComponent implements OnInit {
       const newMarker: any = this.map.pm.Toolbar.copyDrawControl('drawMarker', { name: "newMarker" })
       newMarker.drawInstance.setOptions({ markerStyle: { icon: this.iconMarker("#00b8e6") } });
 
+      this.customToolbar();
+    }
+  }
+
+  private customToolbar() {
+    const actions: any = [
+      "cancel",
+      {
+        text: "Cargar GeoJSON",
+        onClick: () => {
+          this.openUploadFileMapModal()
+        },
+      },
+      {
+        text: "Descargar GeoJSON",
+        onClick: () => {
+         console.log("Descargar GeoJSON")
+        },
+      },
+    ];
+
+    if (this.map) {
       this.map.pm.Toolbar.createCustomControl({
         name: "import",
         title: "Cargar GeoJSON",
         className: 'upload-map',
-        onClick: () => {
-          this.openUploadFileMapModal()
-        }
+        actions: actions,
       });
     }
   }

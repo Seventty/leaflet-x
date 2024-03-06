@@ -1,9 +1,9 @@
-/* import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
+import { environment } from 'src/environments/environment'
 import { FileItem, FileUploader, FileUploaderOptions } from 'ng2-file-upload'
 import { ToastrService } from 'ngx-toastr'
 import { map, tap } from 'rxjs/operators'
-import { environment } from 'src/environments/environment'
 
 @Component({
   selector: 'UIFileUpload',
@@ -40,7 +40,7 @@ export class FileUploadComponent implements OnInit, ControlValueAccessor {
   uploader?: FileUploader
   hasBaseDropZoneOver = false
 
-  constructor(private toastr: ToastrService) {}
+  constructor(/* private toastr: ToastrService */) {}
 
   ngOnInit(): void {
     this.multiple = this.fileLimit > 1
@@ -50,11 +50,11 @@ export class FileUploadComponent implements OnInit, ControlValueAccessor {
       allowedFileType: this.fileType,
       queueLimit: this.fileLimit,
       maxFileSize: this.maxFileSize * (Math.pow(1024, 2)),
-      url: ''
+      url:''
     })
 
     this.uploader.onWhenAddingFileFailed = (fileItem, filter: any) => {
-      if (filter.name == "mimeType")
+      /* if (filter.name == "mimeType")
         this.toastr.warning(`Uno o varios de los archivos que se están tratando de cargar no son permitidos,
         Estos son los formatos permitidos: ${this.fileType.map(x => x)}`, 'Error')
 
@@ -62,7 +62,7 @@ export class FileUploadComponent implements OnInit, ControlValueAccessor {
         this.toastr.warning(`Solo se permiten ${this.fileLimit} archivo${this.fileLimit > 1 ? 's' : ''}.`, 'Error')
 
       if(filter.name == "fileSize")
-        this.toastr.warning(`El tamaño máximo por archivo es de ${this.maxFileSize}MB.`, 'Error')
+        this.toastr.warning(`El tamaño máximo por archivo es de ${this.maxFileSize}MB.`, 'Error') */
     }
   }
 
@@ -90,7 +90,7 @@ export class FileUploadComponent implements OnInit, ControlValueAccessor {
   }
 
   async toBase64Handler() {
-    const filePathsPromises: any[] = [];
+    const filePathsPromises: any = [];
     const _uploader = this.uploader
     const fileList = _uploader?.queue
     fileList?.forEach((item: FileItem) => {
@@ -128,4 +128,33 @@ export class FileUploadComponent implements OnInit, ControlValueAccessor {
   }
 
 }
- */
+
+
+/*   getFilesInUploader() {
+    return new Promise<IUploadItems>(async (resolve, reject) => {
+      try {
+        fileList.map
+        const reader = new FileReader()
+        reader.readAsDataURL(item._file)
+      } catch (error) {
+        console.error('FileUpload Reader>>>>', error)
+        reject(error)
+      }
+    })
+
+    let files: IUploadItems = []
+    const _uploader = this.uploader
+    const fileList = _uploader.queue
+    fileList.forEach((item: FileItem) => {
+      let reader = new FileReader()
+      reader.readAsDataURL(item._file)
+      reader.onload = () => {
+        files.push({
+          nombre: item._file.name,
+          archivo: reader.result as string
+        })
+      };
+    });
+
+    return files
+  } */
