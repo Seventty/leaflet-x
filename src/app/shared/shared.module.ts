@@ -17,7 +17,7 @@ import { FileUploadComponent } from './file-upload/file-upload.component';
   ],
   exports: [
     ModalComponent,
-    FileUploadComponent
+    FileUploadComponent,
   ]
 })
 export class SharedModule { }

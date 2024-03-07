@@ -5,6 +5,8 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { IModalConfig } from 'src/app/shared/modal/IModalConfig';
 import { IModalOption } from 'src/app/shared/modal/IModalOptions';
 import { ModalComponent } from 'src/app/shared/modal/modal.component';
+import Swal from 'sweetalert2';
+import { ToastService } from 'src/app/shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-map',
@@ -78,20 +80,20 @@ export class MapComponent implements OnInit {
   }
 
   private customToolbar() {
-    const actions: any = [
-      "cancel",
+    const customToolbarActions: any = [
       {
-        text: "Cargar GeoJSON",
+        text: "Importar GeoJSON",
         onClick: () => {
           this.openUploadFileMapModal()
         },
       },
       {
-        text: "Descargar GeoJSON",
+        text: "Exportar GeoJSON",
         onClick: () => {
-         console.log("Descargar GeoJSON")
+          this.exportGeoJson();
         },
       },
+      "cancel",
     ];
 
     if (this.map) {
@@ -99,7 +101,7 @@ export class MapComponent implements OnInit {
         name: "import",
         title: "Cargar GeoJSON",
         className: 'upload-map',
-        actions: actions,
+        actions: customToolbarActions
       });
     }
   }
@@ -132,7 +134,12 @@ export class MapComponent implements OnInit {
     return icon;
   }
 
-  constructor() { }
+  exportGeoJson(){
+    this.toastService.showToast("error", "Error", "Capa vacia, se requiere dibujar algo para poder exportar.");
+    console.log("Capas a exportar", this.map?.pm.getGeomanDrawLayers())
+  }
+
+  constructor(private toastService: ToastService) { }
 
   ngOnInit() {
   }
