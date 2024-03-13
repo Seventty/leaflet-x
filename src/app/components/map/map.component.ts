@@ -7,6 +7,7 @@ import { IModalOption } from 'src/app/shared/modal/IModalOptions';
 import { ModalComponent } from 'src/app/shared/modal/modal.component';
 import Swal from 'sweetalert2';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-map',
@@ -15,6 +16,7 @@ import { ToastService } from 'src/app/shared/services/toast/toast.service';
 })
 export class MapComponent implements OnInit {
   private map?: L.Map;
+  private drawFeatures?: L.FeatureGroup;
   private defaultMapLocation: L.LatLngExpression = [19.026319, -70.147792]
   private defaultZoomLevel: number = 8;
   private defaultMaxZoom: number = 18
@@ -37,6 +39,9 @@ export class MapComponent implements OnInit {
       zoom: this.defaultZoomLevel,
       zoomControl: false,
     });
+
+    this.drawFeatures = new L.FeatureGroup();
+    this.map?.addLayer(this.drawFeatures)
 
     this.geomanControllers();
 
@@ -83,10 +88,15 @@ export class MapComponent implements OnInit {
         drawText: false,
         drawMarker: false,
         cutPolygon: false,
-        editControls: true
+        editControls: true,
       });
 
       this.map.pm.setLang('es');
+
+      this.map.on('pm:create', (e: any) => {
+        this.drawFeatures?.addLayer(e.layer);
+        console.log(this.drawFeatures)
+      });
 
       const newMarker: any = this.map.pm.Toolbar.copyDrawControl('drawMarker', { name: "newMarker" })
       newMarker.drawInstance.setOptions({ markerStyle: { icon: this.iconMarker("#00b8e6") } });
@@ -151,11 +161,15 @@ export class MapComponent implements OnInit {
   }
 
   exportGeoJson() {
-    if (this.map?.pm.getGeomanDrawLayers().length === 0) {
-      this.toastService.showToast("error", "Error", "Capa vacia, se requiere dibujar algo para poder exportar.");
-    }
+    if(this.map){
+      if (this.map?.pm.getGeomanDrawLayers().length === 0) {
+        this.toastService.showToast("error", "Error", "Capa vacia, se requiere dibujar algo para poder exportar.");
+        return;
+      }
 
-    /* Aquí exportar todo el geojson */
+      const blob = new Blob([JSON.stringify(this.drawFeatures?.toGeoJSON())], {type: 'application/json'});
+      saveAs(blob, 'mapa.geojson')
+    }
   }
 
   constructor(private toastService: ToastService) { }
