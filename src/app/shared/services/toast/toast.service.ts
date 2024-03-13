@@ -12,6 +12,7 @@ export class ToastService {
       toast: true,
       position: 'top-end',
       showConfirmButton: false,
+      showCloseButton: true,
       timer: 5000,
       timerProgressBar: true,
       didOpen: (toast) => {

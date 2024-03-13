@@ -40,16 +40,32 @@ export class MapComponent implements OnInit {
 
     this.geomanControllers();
 
-    const tiles: L.TileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: this.defaultMaxZoom,
-      minZoom: this.defaultMinZoom,
-      /*
-      *copyright message below
-      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-       */
+    /* Todos los providers > https://leaflet-extras.github.io/leaflet-providers/preview/ */
+    const baseLayers: any = {
+      "Default": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
+      "All light": L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'),
+      "Carto VoyagerLabels": L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png'),
+      "Dark Matter": L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'),
+    }
+
+    L.control.layers(baseLayers).addTo(this.map);
+
+    baseLayers[localStorage.getItem('layerMapProvider') || "Default"].addTo(this.map);
+
+    this.map.on('baselayerchange', (event: any) => {
+      localStorage.setItem('layerMapProvider', event.name)
     });
 
-    tiles.addTo(this.map);
+    // const tiles: L.TileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //   maxZoom: this.defaultMaxZoom,
+    //   minZoom: this.defaultMinZoom,
+    //   /*
+    //   copyright message below
+    //   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    //    */
+    // });
+
+    //tiles.addTo(this.map);
   }
 
   private geomanControllers() {
@@ -134,9 +150,12 @@ export class MapComponent implements OnInit {
     return icon;
   }
 
-  exportGeoJson(){
-    this.toastService.showToast("error", "Error", "Capa vacia, se requiere dibujar algo para poder exportar.");
-    console.log("Capas a exportar", this.map?.pm.getGeomanDrawLayers())
+  exportGeoJson() {
+    if (this.map?.pm.getGeomanDrawLayers().length === 0) {
+      this.toastService.showToast("error", "Error", "Capa vacia, se requiere dibujar algo para poder exportar.");
+    }
+
+    /* Aquí exportar todo el geojson */
   }
 
   constructor(private toastService: ToastService) { }
