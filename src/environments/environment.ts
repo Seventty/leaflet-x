@@ -1,19 +1,21 @@
 export const environment = {
-  allowedMimeTypes: [
-    'application/pdf',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'image/jpeg',
-    'image/jpg',
-    'image/png'
+  allowedMapFileTypes: [
+    'geojson',
+    'shp',
+    'kml',
+    /* '.gpkg',
+    '.prj',
+    '.dbf',
+    '.cpg',
+    '.shx', */
   ],
-  allowedFileTypes: [
-    'jpeg',
-    'jpg',
-    'png',
-    'pdf',
-    'doc',
-    'docx'
+  allowedMapMimeTypes: [
+    'application/gpkg',
+    'application/vnd.google-earth.kml+xml',
+    'application/geo+json',
+    'application/x-esri-shapefile',
+    'application/dbase',
+    'application/x-qgis',
   ],
-  appMaxFileSize: 5,
+  appMaxFileSize: 100,
 }
