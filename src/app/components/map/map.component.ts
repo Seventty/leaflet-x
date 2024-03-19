@@ -24,13 +24,13 @@ export class MapComponent implements AfterViewInit {
   @Input() prefix: string = '';
 
   modalConfig: IModalConfig = {
-    modalTitle: 'Cargar GeoJSON',
+    modalTitle: 'Importar Archivo/s',
     dashboardHeader: true,
   }
 
   modalOption: IModalOption = {
     centered: true,
-    size: 'lg',
+    size: 'md',
   }
 
   private initMap(): void {
