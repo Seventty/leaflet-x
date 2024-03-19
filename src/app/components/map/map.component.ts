@@ -1,27 +1,27 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import "@geoman-io/leaflet-geoman-free";
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { IModalConfig } from 'src/app/shared/modal/IModalConfig';
 import { IModalOption } from 'src/app/shared/modal/IModalOptions';
 import { ModalComponent } from 'src/app/shared/modal/modal.component';
-import Swal from 'sweetalert2';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
 import { saveAs } from 'file-saver';
+import { IBaseLayer } from 'src/app/shared/interfaces/IBaseLayer';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements AfterViewInit {
   private map?: L.Map;
-  private drawFeatures?: L.FeatureGroup;
+  private featureGroup?: L.FeatureGroup;
   private defaultMapLocation: L.LatLngExpression = [19.026319, -70.147792]
   private defaultZoomLevel: number = 8;
   private defaultMaxZoom: number = 18
   private defaultMinZoom: number = 3
   @ViewChild("uploadModal") uploadModal?: ModalComponent
+  @Input() prefix: string = '';
 
   modalConfig: IModalConfig = {
     modalTitle: 'Cargar GeoJSON',
@@ -39,13 +39,17 @@ export class MapComponent implements OnInit {
       zoom: this.defaultZoomLevel,
       zoomControl: false,
     });
+  }
 
-    this.drawFeatures = new L.FeatureGroup();
-    this.map?.addLayer(this.drawFeatures)
+  private setFeatureGroup() {
+    this.featureGroup = new L.FeatureGroup();
+    this.map?.addLayer(this.featureGroup)
+  }
 
-    this.geomanControllers();
-    /* Todos los providers > https://leaflet-extras.github.io/leaflet-providers/preview/ */
-    const baseLayers: any = {
+  private switchBaseLayer(): void {
+    /* All free BaseLayer available > https://leaflet-extras.github.io/leaflet-providers/preview/ */
+
+    const baseLayers: IBaseLayer = {
       "Default": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
       "All light": L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'),
       "Carto VoyagerLabels": L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png'),
@@ -53,17 +57,23 @@ export class MapComponent implements OnInit {
       "OpenTopoMap": L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png')
     }
 
-    L.control.layers(baseLayers).addTo(this.map);
-
-    baseLayers[localStorage.getItem('layerMapProvider') || "Default"].addTo(this.map);
-
-    this.map.on('baselayerchange', (event: any) => {
-      localStorage.setItem('layerMapProvider', event.name)
-    });
+    if (this.map) {
+      const baseLayerSwitcherController: L.Control = L.control.layers(baseLayers).addTo(this.map);
+      const defaultBaseLayerProvider: string = localStorage.getItem('layerMapProvider') || "Default";
+      const defaultBaseLayer = baseLayers[defaultBaseLayerProvider]
+      if (defaultBaseLayer) {
+        defaultBaseLayer.addTo(this.map);
+      }
+      this.map.on('baselayerchange', (event: any) => {
+        localStorage.setItem('layerMapProvider', event.name)
+      });
+    }
   }
 
   private geomanControllers() {
     if (this.map) {
+      this.map.attributionControl.setPrefix(this.prefix);
+
       L.control.zoom({
         position: "topright",
         zoomInTitle: 'Acercar',
@@ -83,14 +93,12 @@ export class MapComponent implements OnInit {
       this.map.pm.setLang('es');
 
       this.map.on('pm:create', (e: any) => {
-        this.drawFeatures?.addLayer(e.layer);
-        console.log(this.drawFeatures)
+        this.featureGroup?.addLayer(e.layer);
+        console.log(this.featureGroup)
       });
 
       const newMarker: any = this.map.pm.Toolbar.copyDrawControl('drawMarker', { name: "newMarker" })
       newMarker.drawInstance.setOptions({ markerStyle: { icon: this.iconMarker("#00b8e6") } });
-
-      this.customToolbar();
     }
   }
 
@@ -105,7 +113,7 @@ export class MapComponent implements OnInit {
       {
         text: "Exportar GeoJSON",
         onClick: () => {
-          this.exportGeoJson();
+         /*  this.exportGeoJson(); */
         },
       },
       "cancel",
@@ -149,25 +157,26 @@ export class MapComponent implements OnInit {
     return icon;
   }
 
-  exportGeoJson() {
-    if(this.map){
+  /* exportGeoJson() {
+    if (this.map) {
       if (this.map?.pm.getGeomanDrawLayers().length === 0) {
         this.toastService.showToast("error", "Error", "Se requiere dibujar algo en el mapa para poder exportar.");
         return;
       }
 
-      const blob = new Blob([JSON.stringify(this.drawFeatures?.toGeoJSON())], {type: 'application/json'});
+      const blob = new Blob([JSON.stringify(this.featureGroup?.toGeoJSON())], { type: 'application/json' });
       saveAs(blob, 'mapa.geojson')
     }
-  }
+  } */
 
   constructor(private toastService: ToastService) { }
 
-  ngOnInit() {
-  }
-
   ngAfterViewInit(): void {
-    this.initMap()
+    this.initMap();
+    this.setFeatureGroup();
+    this.geomanControllers();
+    this.customToolbar();
+    this.switchBaseLayer();
   }
 
   openUploadFileMapModal() {
