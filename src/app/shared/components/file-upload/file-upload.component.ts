@@ -2,9 +2,10 @@ import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, On
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 import { environment } from 'src/environments/environment'
 import { FileItem, FileUploader, FileUploaderOptions } from 'ng2-file-upload'
-import { ToastrService } from 'ngx-toastr'
 import { map, tap } from 'rxjs/operators'
 import Swal from 'sweetalert2'
+import { ToastService } from '../../services/toast/toast.service'
+
 
 @Component({
   selector: 'UIFileUpload',
@@ -29,9 +30,9 @@ export class FileUploadComponent implements OnInit, ControlValueAccessor {
   @Input() maxFileSize: number = environment.appMaxFileSize;
   @Input() mimeType: Array<string> = environment.allowedMapMimeTypes;
 
-  @Output() onFileAdded: EventEmitter<any> = new EventEmitter()
+  //@Output() onFileAdded: EventEmitter<any> = new EventEmitter()
   multiple: boolean = false
-  selected!: any
+  uploadedFiles!: Array<File>
   private onTouched: any = () => { }
   private onChanged: any = () => { }
 
@@ -39,27 +40,7 @@ export class FileUploadComponent implements OnInit, ControlValueAccessor {
   uploader?: FileUploader
   hasBaseDropZoneOver = false
 
-  constructor() { }
-
-  showToast(icon: string, title: string, text: string) {
-    const errorToast: any = Swal.mixin({
-      toast: true,
-      position: 'top-end',
-      showConfirmButton: false,
-      timer: 5000,
-      timerProgressBar: true,
-      didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer)
-        toast.addEventListener('mouseleave', Swal.resumeTimer)
-      }
-    });
-
-    errorToast.fire({
-      icon: icon,
-      title: title,
-      text: text
-    })
-  }
+  constructor(private toastService: ToastService) { }
 
   ngOnInit(): void {
     this.multiple = this.fileLimit > 1
@@ -76,10 +57,10 @@ export class FileUploadComponent implements OnInit, ControlValueAccessor {
         Estos son los formatos permitidos: ${this.fileType.map(x => x)}`, 'Error')
 
       if (filter.name == "queueLimit")
-        this.showToast("error", "Limite de archivos", `Solo se permiten ${this.fileLimit} archivo${this.fileLimit > 1 ? 's' : ''}`)
+      this.toastService.showToast("error", "Limite de archivos", `Solo se permiten ${this.fileLimit} archivo${this.fileLimit > 1 ? 's' : ''}`)
 
       if (filter.name == "fileSize")
-        this.showToast("error", "Limite de tamaño", `El tamaño máximo por archivo es de ${this.maxFileSize}MB. Si necesita más espacio, escribirle al equipo de TI.`)
+      this.toastService.showToast("error", "Limite de tamaño", `El tamaño máximo por archivo es de ${this.maxFileSize}MB. Si necesita más espacio, escribirle al equipo de TI.`)
     }
 
     this.uploader.onAfterAddingFile = (item) => {
@@ -91,10 +72,10 @@ export class FileUploadComponent implements OnInit, ControlValueAccessor {
           if (this.uploader.queue.filter(f => f._file.name == item._file.name).length == 0) {
             this.uploader.queue.push(item);
           } else {
-            this.showToast("error", "Error", "No se puede importar un archivo repetido");
+            this.toastService.showToast("error", "Error", "No se puede importar un archivo repetido");
           }
         } else {
-          this.showToast("error", "Error", `El formato .${fileName} no está soportado por el momento.`);
+          this.toastService.showToast("error", "Error", `El formato .${fileName} no está soportado por el momento.`);
         }
       }
     };
@@ -111,10 +92,10 @@ export class FileUploadComponent implements OnInit, ControlValueAccessor {
   addedFileToQueue() {
     if (this.uploader) {
       const files = this.uploader.queue.map(file => file?._file)
-      this.selected = files
+      this.uploadedFiles = files
       this.onChanged(files)
       this.onTouched()
-      this.onFileAdded.emit(this.selected);
+      //this.onFileAdded.emit(this.selected);
     }
   }
 
@@ -122,16 +103,16 @@ export class FileUploadComponent implements OnInit, ControlValueAccessor {
     if (this.uploader) {
       item.remove()
       const files = this.uploader.queue.map(file => file?._file)
-      this.selected = files
+      this.uploadedFiles = files
       this.onChanged(files)
       this.onTouched()
-      this.onFileAdded.emit(this.selected);
+      //this.onFileAdded.emit(this.selected);
     }
   }
 
   //control value accessor
   writeValue(value: any): void {
-    this.selected = value ?? null
+    this.uploadedFiles = value ?? null
   }
   registerOnChange(fn: any): void {
     this.onChanged = fn
@@ -143,34 +124,9 @@ export class FileUploadComponent implements OnInit, ControlValueAccessor {
     this.disabled = isDisabled
   }
 
+  public sendFiles(){
+    /* Hacer un servicio para enviar el archivo al mapa */
+    console.log("Archivo seleccionado", this.uploadedFiles)
+  }
+
 }
-
-
-/*   getFilesInUploader() {
-    return new Promise<IUploadItems>(async (resolve, reject) => {
-      try {
-        fileList.map
-        const reader = new FileReader()
-        reader.readAsDataURL(item._file)
-      } catch (error) {
-        console.error('FileUpload Reader>>>>', error)
-        reject(error)
-      }
-    })
-
-    let files: IUploadItems = []
-    const _uploader = this.uploader
-    const fileList = _uploader.queue
-    fileList.forEach((item: FileItem) => {
-      let reader = new FileReader()
-      reader.readAsDataURL(item._file)
-      reader.onload = () => {
-        files.push({
-          nombre: item._file.name,
-          archivo: reader.result as string
-        })
-      };
-    });
-
-    return files
-  } */

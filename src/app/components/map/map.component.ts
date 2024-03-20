@@ -157,7 +157,9 @@ export class MapComponent implements AfterViewInit {
     return icon;
   }
 
-  /* exportGeoJson() {
+  /*
+  mover esto a un servicio
+  exportGeoJson() {
     if (this.map) {
       if (this.map?.pm.getGeomanDrawLayers().length === 0) {
         this.toastService.showToast("error", "Error", "Se requiere dibujar algo en el mapa para poder exportar.");
