@@ -1,8 +1,16 @@
 export const environment = {
   allowedMapFileTypes: [
+    'json',
     'geojson',
+    'topojson',
     'shp',
     'kml',
+    'csv',
+    'tsv',
+    'dsv',
+    'xml',
+    'osm',
+    'poly'
     /* '.gpkg',
     '.prj',
     '.dbf',
@@ -16,6 +24,7 @@ export const environment = {
     'application/x-esri-shapefile',
     'application/dbase',
     'application/x-qgis',
+    'text/csv'
   ],
   appMaxFileSize: 100,
 }
