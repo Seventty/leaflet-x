@@ -6,6 +6,7 @@ import { IModalOption } from 'src/app/shared/modal/IModalOptions';
 import { ModalComponent } from 'src/app/shared/modal/modal.component';
 import { saveAs } from 'file-saver';
 import { IBaseLayer } from 'src/app/shared/interfaces/IBaseLayer';
+import { ToastService } from 'src/app/shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-map',
@@ -178,7 +179,7 @@ export class MapComponent implements AfterViewInit {
     }
   } */
 
-  constructor() { }
+  constructor(private toastService: ToastService) { }
 
   ngAfterViewInit(): void {
     this.initMap();

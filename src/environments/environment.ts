@@ -24,7 +24,6 @@ export const environment = {
     'application/x-esri-shapefile',
     'application/dbase',
     'application/x-qgis',
-    'text/csv'
   ],
   appMaxFileSize: 100,
 }

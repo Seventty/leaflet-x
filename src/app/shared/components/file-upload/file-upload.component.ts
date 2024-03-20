@@ -58,10 +58,10 @@ export class FileUploadComponent implements OnInit, ControlValueAccessor {
         Estos son los formatos permitidos: ${this.fileType.map(x => x)}`, 'Error')
 
       if (filter.name == "queueLimit")
-      this.toastService.showToast("error", "Limite de archivos", `Solo se permiten ${this.fileLimit} archivo${this.fileLimit > 1 ? 's' : ''}`)
+      this.toastService.errorToast("Limite de archivos", `Solo se permiten ${this.fileLimit} archivo${this.fileLimit > 1 ? 's' : ''}`)
 
       if (filter.name == "fileSize")
-      this.toastService.showToast("error", "Limite de tamaño", `El tamaño máximo por archivo es de ${this.maxFileSize}MB. Si necesita más espacio, escribirle al equipo de TI.`)
+      this.toastService.errorToast("Limite de tamaño", `El tamaño máximo por archivo es de ${this.maxFileSize}MB. Si necesita más espacio, escribirle al equipo de TI.`)
     }
 
     this.uploader.onAfterAddingFile = (item) => {
@@ -73,10 +73,10 @@ export class FileUploadComponent implements OnInit, ControlValueAccessor {
           if (this.uploader.queue.filter(f => f._file.name == item._file.name).length == 0) {
             this.uploader.queue.push(item);
           } else {
-            this.toastService.showToast("error", "Error", "No se puede importar un archivo repetido");
+            this.toastService.errorToast("Error", "No se puede importar un archivo repetido");
           }
         } else {
-          this.toastService.showToast("error", "Error", `El formato .${fileName} no está soportado por el momento.`);
+          this.toastService.errorToast("Error", `El formato .${fileName} no está soportado por el momento.`);
         }
       }
     };
