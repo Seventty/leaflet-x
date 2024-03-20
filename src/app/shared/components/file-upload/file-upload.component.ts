@@ -5,6 +5,7 @@ import { FileItem, FileUploader, FileUploaderOptions } from 'ng2-file-upload'
 import { map, tap } from 'rxjs/operators'
 import Swal from 'sweetalert2'
 import { ToastService } from '../../services/toast/toast.service'
+import { FileManagerService } from '../../services/file-manager/file-manager.service'
 
 
 @Component({
@@ -40,7 +41,7 @@ export class FileUploadComponent implements OnInit, ControlValueAccessor {
   uploader?: FileUploader
   hasBaseDropZoneOver = false
 
-  constructor(private toastService: ToastService) { }
+  constructor(private toastService: ToastService, private fileManager: FileManagerService) { }
 
   ngOnInit(): void {
     this.multiple = this.fileLimit > 1
@@ -95,7 +96,6 @@ export class FileUploadComponent implements OnInit, ControlValueAccessor {
       this.uploadedFiles = files
       this.onChanged(files)
       this.onTouched()
-      //this.onFileAdded.emit(this.selected);
     }
   }
 
@@ -106,7 +106,6 @@ export class FileUploadComponent implements OnInit, ControlValueAccessor {
       this.uploadedFiles = files
       this.onChanged(files)
       this.onTouched()
-      //this.onFileAdded.emit(this.selected);
     }
   }
 
@@ -125,8 +124,7 @@ export class FileUploadComponent implements OnInit, ControlValueAccessor {
   }
 
   public sendFiles(){
-    /* Hacer un servicio para enviar el archivo al mapa */
-    console.log("Archivo seleccionado", this.uploadedFiles)
+    this.fileManager.sendFilesUploaded(this.uploadedFiles)
   }
 
 }

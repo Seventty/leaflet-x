@@ -4,7 +4,6 @@ import "@geoman-io/leaflet-geoman-free";
 import { IModalConfig } from 'src/app/shared/modal/IModalConfig';
 import { IModalOption } from 'src/app/shared/modal/IModalOptions';
 import { ModalComponent } from 'src/app/shared/modal/modal.component';
-import { ToastService } from 'src/app/shared/services/toast/toast.service';
 import { saveAs } from 'file-saver';
 import { IBaseLayer } from 'src/app/shared/interfaces/IBaseLayer';
 
@@ -20,7 +19,7 @@ export class MapComponent implements AfterViewInit {
   private defaultZoomLevel: number = 8;
   private defaultMaxZoom: number = 18
   private defaultMinZoom: number = 3
-  @ViewChild("uploadModal") uploadModal?: ModalComponent
+  @ViewChild("uploadFileModal") uploadFileModal?: ModalComponent
   @Input() prefix: string = '';
 
   modalConfig: IModalConfig = {
@@ -31,6 +30,10 @@ export class MapComponent implements AfterViewInit {
   modalOption: IModalOption = {
     centered: true,
     size: 'md',
+  }
+
+  private openUploadFileMapModal() {
+    this.uploadFileModal?.open()
   }
 
   private initMap(): void {
@@ -51,10 +54,10 @@ export class MapComponent implements AfterViewInit {
 
     const baseLayers: IBaseLayer = {
       "Default": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
-      "All light": L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'),
-      "Carto VoyagerLabels": L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png'),
-      "Dark Matter": L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'),
-      "OpenTopoMap": L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png')
+      "Outdoor": L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'),
+      "Satellite": L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'),
+      "light": L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'),
+      "Dark": L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'),
     }
 
     if (this.map) {
@@ -157,6 +160,10 @@ export class MapComponent implements AfterViewInit {
     return icon;
   }
 
+  private getUploaderData(){
+
+  }
+
   /*
   mover esto a un servicio
   exportGeoJson() {
@@ -171,7 +178,7 @@ export class MapComponent implements AfterViewInit {
     }
   } */
 
-  constructor(private toastService: ToastService) { }
+  constructor() { }
 
   ngAfterViewInit(): void {
     this.initMap();
@@ -179,10 +186,6 @@ export class MapComponent implements AfterViewInit {
     this.geomanControllers();
     this.customToolbar();
     this.switchBaseLayer();
+    this.getUploaderData();
   }
-
-  openUploadFileMapModal() {
-    this.uploadModal?.open()
-  }
-
 }
