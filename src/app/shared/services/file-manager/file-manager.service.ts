@@ -12,14 +12,16 @@ type GeoJsonResult = FeatureCollection<Geometry | null, GeoJsonProperties>;
   providedIn: 'root'
 })
 export class FileManagerService {
-
-  //private featureCollection: Array<File> = []
   private $featureCollection = new BehaviorSubject<any[]>([]);
 
   constructor(private toastService: ToastService) { }
 
   public getFeatureCollection(): Observable<File[]>{
     return this.$featureCollection.asObservable()
+  }
+
+  private setFeatureCollection(result: any){
+    this.$featureCollection.next(result)
   }
 
   public sendFilesUploaded(files: Array<File>) {
@@ -41,13 +43,13 @@ export class FileManagerService {
   private readFile(fileType: string, content: string) {
     switch (fileType) {
       case "kml":
-        this.normalizeFeatureCollection(this.kmlHandler(content))
+        this.setFeatureCollection(this.normalizeFeatureCollection(this.kmlHandler(content)))
         break;
       case "gpx":
-        this.normalizeFeatureCollection(this.gpxHandler(content))
+        this.setFeatureCollection(this.normalizeFeatureCollection(this.gpxHandler(content)))
         break;
       case "geojson":
-        this.normalizeFeatureCollection(this.geoJsonHandler(content))
+        this.setFeatureCollection(this.normalizeFeatureCollection(this.geoJsonHandler(content)))
         break;
       case "xml":
         //this.xmlHandler(content)
@@ -63,12 +65,7 @@ export class FileManagerService {
 
   private normalizeFeatureCollection(geoJson: GeoJsonResult){
     const normalizer: GeoJsonNormalize = new GeoJsonNormalize;
-    console.log(normalizer.normalize(geoJson))
-    //return normalizer.normalize(geoJson);
-  }
-
-  private importToMap(result: any){
-    //this.$featureCollection.next(this.normalizeFeatureCollection(result))
+    return normalizer.normalize(geoJson);
   }
 
   private detectType(file: File): string {

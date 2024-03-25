@@ -7,6 +7,7 @@ import { ModalComponent } from 'src/app/shared/modal/modal.component';
 import { saveAs } from 'file-saver';
 import { IBaseLayer } from 'src/app/shared/interfaces/IBaseLayer';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
+import { FileManagerService } from 'src/app/shared/services/file-manager/file-manager.service';
 
 @Component({
   selector: 'app-map',
@@ -117,7 +118,7 @@ export class MapComponent implements AfterViewInit {
       {
         text: "Exportar GeoJSON",
         onClick: () => {
-         /*  this.exportGeoJson(); */
+           this.exportGeoJson();
         },
       },
       "cancel",
@@ -161,25 +162,34 @@ export class MapComponent implements AfterViewInit {
     return icon;
   }
 
-  private getUploaderData(){
-
+  private getFeatureCollection() {
+    this.fileManagerService.getFeatureCollection().subscribe((res: any) => {
+      this.renderFeatureCollectionToMap(res)
+    })
   }
 
-  /*
-  mover esto a un servicio
+  private renderFeatureCollectionToMap(featureCollection: any) {
+    if (this.map) {
+      L.geoJSON(featureCollection).addTo(this.map);
+    }
+  }
+
+
+  /* mover esto a un servicio */
   exportGeoJson() {
     if (this.map) {
+      console.log(this.map.pm.getGeomanLayers())
       if (this.map?.pm.getGeomanDrawLayers().length === 0) {
-        this.toastService.showToast("error", "Error", "Se requiere dibujar algo en el mapa para poder exportar.");
+        //this.toastService.showToast("error", "Error", "Se requiere dibujar algo en el mapa para poder exportar.");
         return;
       }
 
       const blob = new Blob([JSON.stringify(this.featureGroup?.toGeoJSON())], { type: 'application/json' });
       saveAs(blob, 'mapa.geojson')
     }
-  } */
+  }
 
-  constructor(private toastService: ToastService) { }
+  constructor(private fileManagerService: FileManagerService) { }
 
   ngAfterViewInit(): void {
     this.initMap();
@@ -187,6 +197,6 @@ export class MapComponent implements AfterViewInit {
     this.geomanControllers();
     this.customToolbar();
     this.switchBaseLayer();
-    this.getUploaderData();
+    this.getFeatureCollection();
   }
 }
