@@ -1,8 +1,16 @@
 export const environment = {
   allowedMapFileTypes: [
+    'json',
     'geojson',
+    'topojson',
     'shp',
     'kml',
+    'csv',
+    'tsv',
+    'dsv',
+    'xml',
+    'osm',
+    'poly'
     /* '.gpkg',
     '.prj',
     '.dbf',
