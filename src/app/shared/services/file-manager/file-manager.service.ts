@@ -47,7 +47,7 @@ export class FileManagerService {
         this.normalizeFeatureCollection(this.gpxHandler(content))
         break;
       case "geojson":
-        //this.normalizeFeatureCollection(this.geoJsonHandler(content))
+        this.normalizeFeatureCollection(this.geoJsonHandler(content))
         break;
       case "xml":
         //this.xmlHandler(content)
@@ -64,7 +64,7 @@ export class FileManagerService {
   private normalizeFeatureCollection(geoJson: GeoJsonResult){
     const normalizer: GeoJsonNormalize = new GeoJsonNormalize;
     console.log(normalizer.normalize(geoJson))
-    return normalizer.normalize(geoJson);
+    //return normalizer.normalize(geoJson);
   }
 
   private importToMap(result: any){
@@ -105,7 +105,7 @@ export class FileManagerService {
     return toGeoJson.gpx(this.toDom(content));
   }
 
-  private geoJsonHandler(content: string): GeoJsonResult | null {
+  private geoJsonHandler(content: string) {
     try {
       const geoJsonResult = JSON.parse(content);
       if (geoJsonResult && geoJsonResult.type === 'Topology' && geoJsonResult) {
@@ -126,7 +126,6 @@ export class FileManagerService {
       }
     } catch (error) {
       this.toastService.errorToast("Error", "Archivo JSON inválido");
-      return null;
     }
   }
 
