@@ -1,0 +1,16 @@
+.map-container {
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
+
+.map-frame {
+  height: 100%;
+  position: relative;
+}
+
+#map {
+  height: 100%;
+  margin-top: 0;
+}
