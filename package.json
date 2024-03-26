@@ -1,15 +1,14 @@
 {
   "name": "@seventty/ngx-leaflet",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build LeafletX --configuration=production",
+    "prod-watch": "ng build LeafletX --configuration=production --watch",
+    "publish": "npm publish ./dist/leaflet-x",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "prod": "ng build LeafletX",
-    "prod-watch": "ng build LeafletX --configuration=production --watch"
-
+    "test": "ng test"
   },
   "private": true,
   "dependencies": {

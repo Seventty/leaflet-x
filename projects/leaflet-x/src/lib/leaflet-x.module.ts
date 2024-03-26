@@ -1,18 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FileUploadComponent } from './shared/components/file-upload/file-upload.component';
 import { SharedModule } from './shared/shared.module';
+import { LeafletXComponent } from './components/leaflet-x/leaflet-x.component'
 
 
 
 @NgModule({
   declarations: [
+    LeafletXComponent
   ],
   imports: [
     CommonModule,
     SharedModule
   ],
   exports: [
+    LeafletXComponent
   ]
 })
 export class LeafletXModule { }

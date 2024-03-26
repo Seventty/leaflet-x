@@ -2,7 +2,8 @@ import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
 import { ModalComponent } from '../../shared/modal/modal.component';
 import { IModalConfig } from '../../shared/modal/IModalConfig';
 import { IModalOption } from '../../shared/modal/IModalOptions';
-import L from 'leaflet';
+import * as L from 'leaflet';
+import "@geoman-io/leaflet-geoman-free";
 import { IBaseLayer } from '../../shared/interfaces/IBaseLayer';
 import { FileManagerService } from '../../shared/services/file-manager/file-manager.service';
 
