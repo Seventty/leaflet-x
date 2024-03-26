@@ -12,16 +12,19 @@ type GeoJsonResult = FeatureCollection<Geometry | null, GeoJsonProperties>;
   providedIn: 'root'
 })
 export class FileManagerService {
-  private $featureCollection = new BehaviorSubject<any[]>([]);
+  private $featureCollection = new BehaviorSubject<GeoJsonResult>({
+    type: "FeatureCollection",
+    features: []
+  });
 
   constructor(private toastService: ToastService) { }
 
-  public getFeatureCollection(): Observable<File[]>{
+  public getFeatureCollection(): Observable<GeoJsonResult>{
     return this.$featureCollection.asObservable()
   }
 
-  private setFeatureCollection(result: any){
-    this.$featureCollection.next(result)
+  private setFeatureCollection(geojsonResult: GeoJsonResult){
+    this.$featureCollection.next(geojsonResult)
   }
 
   public sendFilesUploaded(files: Array<File>) {
@@ -43,13 +46,13 @@ export class FileManagerService {
   private readFile(fileType: string, content: string) {
     switch (fileType) {
       case "kml":
-        this.setFeatureCollection(this.normalizeFeatureCollection(this.kmlHandler(content)))
+        this.setFeatureCollection(this.normalizeFeatureCollection(this.kmlHandler(content)) as GeoJsonResult)
         break;
       case "gpx":
-        this.setFeatureCollection(this.normalizeFeatureCollection(this.gpxHandler(content)))
+        this.setFeatureCollection(this.normalizeFeatureCollection(this.gpxHandler(content)) as GeoJsonResult)
         break;
       case "geojson":
-        this.setFeatureCollection(this.normalizeFeatureCollection(this.geoJsonHandler(content)))
+        this.setFeatureCollection(this.normalizeFeatureCollection(this.geoJsonHandler(content)) as GeoJsonResult)
         break;
       case "xml":
         //this.xmlHandler(content)

@@ -179,13 +179,13 @@ export class MapComponent implements AfterViewInit {
   exportGeoJson() {
     if (this.map) {
       console.log(this.map.pm.getGeomanLayers())
-      if (this.map?.pm.getGeomanDrawLayers().length === 0) {
-        //this.toastService.showToast("error", "Error", "Se requiere dibujar algo en el mapa para poder exportar.");
+      /* if (this.map?.pm.getGeomanDrawLayers().length === 0) {
+        this.toastService.showToast("error", "Error", "Se requiere dibujar algo en el mapa para poder exportar.");
         return;
-      }
+      } */
 
-      const blob = new Blob([JSON.stringify(this.featureGroup?.toGeoJSON())], { type: 'application/json' });
-      saveAs(blob, 'mapa.geojson')
+      //const blob = new Blob([JSON.stringify(this.featureGroup?.toGeoJSON())], { type: 'application/json' });
+      //saveAs(blob, 'mapa.geojson')
     }
   }
 
