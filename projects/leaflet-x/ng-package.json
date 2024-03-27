@@ -1,0 +1,28 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../dist/leaflet-x",
+  "allowedNonPeerDependencies": [
+    "@geoman-io/leaflet-geoman-free",
+    "@ng-bootstrap/ng-bootstrap",
+    "@popperjs/core",
+    "@tmcw/togeojson",
+    "bootstrap",
+    "csv2geojson",
+    "file-saver",
+    "leaflet",
+    "ng2-file-upload",
+    "ngx-toastr",
+    "rxjs",
+    "sweetalert2",
+    "topojson-client",
+    "@types/file-saver",
+    "@types/jasmine",
+    "@types/leaflet",
+    "@types/node",
+    "@types/osmtogeojson",
+    "@types/topojson-client"
+  ],
+  "lib": {
+    "entryFile": "src/public-api.ts"
+  }
+}

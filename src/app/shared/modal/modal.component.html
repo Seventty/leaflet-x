@@ -1,26 +1,10 @@
 <ng-template #modal>
   <div *ngIf="modalConfig && modalConfig.modalTitle" class="modal-header">
     <h5 [ngClass]="modalConfig.dashboardHeader ? 'dashboardTitle text-primary pt-2 font-weight-bold' : 'modal-title'">{{ modalConfig.modalTitle }}</h5>
-    <button type="button" class="close" aria-label="Close" (click)="dismiss()">
-      <span aria-hidden="true">&times;</span>
+    <button type="button" class="btn-close" (click)="dismiss()">
     </button>
   </div>
   <div class="modal-body">
     <ng-content></ng-content>
-    <!-- <ng-container
-      *ngTemplateOutlet="contentRef; context:{ $implicit: modalConfig, close: modalClosed, dismiss: modalDismissed }">
-    </ng-container> -->
-  </div>
-  <div class="modal-footer" *ngIf="modalConfig && (modalConfig.dismissButtonLabel || modalConfig.closeButtonLabel)">
-    <button type="button" class="btn btn-outline-secondary" (click)="dismiss()"
-      *ngIf="modalConfig.hideDismissButton === undefined || !modalConfig.hideDismissButton()"
-      [disabled]="modalConfig.disableDismissButton !== undefined && modalConfig.disableDismissButton()">
-      {{ modalConfig.dismissButtonLabel }}
-    </button>
-    <button type="button" class="btn btn-primary" (click)="close()"
-      *ngIf="modalConfig.hideCloseButton === undefined || !modalConfig.hideCloseButton()"
-      [disabled]="modalConfig.disableCloseButton !== undefined && modalConfig.disableCloseButton()">
-      {{ modalConfig.closeButtonLabel }}
-    </button>
   </div>
 </ng-template>

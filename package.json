@@ -1,10 +1,12 @@
 {
-  "name": "leaflet-base",
-  "version": "0.0.0",
+  "name": "@seventty/ngx-leaflet",
+  "version": "0.0.11",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build LeafletX --configuration=production",
+    "prod-watch": "ng build LeafletX --configuration=production --watch",
+    "publish": "npm publish ./dist/leaflet-x",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -51,6 +53,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
+    "ng-packagr": "^15.2.2",
     "typescript": "~4.9.4"
   }
 }
