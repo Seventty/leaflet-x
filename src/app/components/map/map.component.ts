@@ -8,6 +8,9 @@ import { saveAs } from 'file-saver';
 import { IBaseLayer } from 'src/app/shared/interfaces/IBaseLayer';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
 import { FileManagerService } from 'src/app/shared/services/file-manager/file-manager.service';
+import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson'
+
+type GeoJsonResult = FeatureCollection<Geometry | null, GeoJsonProperties>;
 
 @Component({
   selector: 'app-map',
@@ -99,7 +102,6 @@ export class MapComponent implements AfterViewInit {
 
       this.map.on('pm:create', (e: any) => {
         this.featureGroup?.addLayer(e.layer);
-        console.log(this.featureGroup)
       });
 
       const newMarker: any = this.map.pm.Toolbar.copyDrawControl('drawMarker', { name: "newMarker" })
@@ -118,7 +120,7 @@ export class MapComponent implements AfterViewInit {
       {
         text: "Exportar GeoJSON",
         onClick: () => {
-           this.exportGeoJson();
+          this.exportGeoJson();
         },
       },
       "cancel",
@@ -178,7 +180,20 @@ export class MapComponent implements AfterViewInit {
   /* mover esto a un servicio */
   exportGeoJson() {
     if (this.map) {
-      console.log(this.map.pm.getGeomanLayers())
+      const geomanLayers = this.map.pm.getGeomanLayers();
+
+      const geojson: GeoJsonResult = {
+        type: 'FeatureCollection',
+        features: []
+      };
+
+      geomanLayers.forEach((layer: any) => {
+        const layerGeoJSON = layer.toGeoJSON();
+        geojson.features.push(layerGeoJSON);
+      });
+
+      console.log(geojson)
+
       /* if (this.map?.pm.getGeomanDrawLayers().length === 0) {
         this.toastService.showToast("error", "Error", "Se requiere dibujar algo en el mapa para poder exportar.");
         return;
