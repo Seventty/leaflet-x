@@ -24,6 +24,7 @@ export class MapComponent implements AfterViewInit {
   private defaultMinZoom: number = 3
   @ViewChild("uploadFileModal") uploadFileModal?: ModalComponent
   @Input() prefix: string = '';
+  @Input() featureCollectionInput?: GeoJsonResult;
 
   modalConfig: IModalConfig = {
     modalTitle: 'Importar Archivo/s',
@@ -162,13 +163,13 @@ export class MapComponent implements AfterViewInit {
     return icon;
   }
 
-  private getFeatureCollection() {
-    this.fileManagerService.getFeatureCollection().subscribe((res: any) => {
+  private getFeatureCollectionFromFile() {
+    this.fileManagerService.getFileFeatureCollection().subscribe((res: GeoJsonResult) => {
       this.renderFeatureCollectionToMap(res)
     })
   }
 
-  private renderFeatureCollectionToMap(featureCollection: any) {
+  private renderFeatureCollectionToMap(featureCollection: GeoJsonResult) {
     if (this.map) {
       L.geoJSON(featureCollection).addTo(this.map);
     }
@@ -202,6 +203,11 @@ export class MapComponent implements AfterViewInit {
     }
   }
 
+  drawInputFeatureCollectionIntoMap() {
+    if(!this.featureCollectionInput) return;
+    this.renderFeatureCollectionToMap(this.featureCollectionInput)
+  }
+
   constructor(private fileManagerService: FileManagerService) { }
 
   ngAfterViewInit(): void {
@@ -210,6 +216,8 @@ export class MapComponent implements AfterViewInit {
     this.geomanControllers();
     this.customToolbar();
     this.switchBaseLayer();
-    this.getFeatureCollection();
+    this.getFeatureCollectionFromFile();
+    this.drawInputFeatureCollectionIntoMap();
   }
+
 }
