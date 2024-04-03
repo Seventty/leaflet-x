@@ -4,20 +4,23 @@ import { ModalComponent } from './modal/modal.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { FileUploadModule } from 'ng2-file-upload';
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
+import { FileExportComponent } from './components/file-export/file-export.component';
 
 @NgModule({
   imports: [
     CommonModule,
     BrowserModule,
-    FileUploadModule
+    FileUploadModule,
   ],
   declarations: [
     ModalComponent,
-    FileUploadComponent
+    FileUploadComponent,
+    FileExportComponent
   ],
   exports: [
     ModalComponent,
-    FileUploadComponent
+    FileUploadComponent,
+    FileExportComponent
   ]
 })
 export class SharedModule { }

@@ -4,7 +4,10 @@
   </div>
 </div>
 
-<UIModal [modalConfig]="modalConfig" [modalOption]="modalOption" #uploadFileModal>
-  <UIFileUpload [modalReference]="uploadFileModal"></UIFileUpload>
+<UIModal [modalConfig]="fileManagerModalConfig" [modalOption]="fileManagerModalOption" #fileManagerModal>
+  <UIFileUpload [modalReference]="fileManagerModal"></UIFileUpload>
 </UIModal>
 
+<UIModal [modalConfig]="fileExportModalConfig" [modalOption]="fileExportModalOption" #fileExportModal>
+  <UIFileExport [FeatureCollectionToExport]="featureCollection"></UIFileExport>
+</UIModal>

@@ -4,11 +4,9 @@ import "@geoman-io/leaflet-geoman-free";
 import { IModalConfig } from 'src/app/shared/modal/IModalConfig';
 import { IModalOption } from 'src/app/shared/modal/IModalOptions';
 import { ModalComponent } from 'src/app/shared/modal/modal.component';
-import { saveAs } from 'file-saver';
 import { IBaseLayer } from 'src/app/shared/interfaces/IBaseLayer';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
 import { FileManagerService } from 'src/app/shared/services/file-manager/file-manager.service';
-import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson'
 import { Watermark } from 'src/app/shared/utils/watermark.control';
 import { GeoJsonResult } from 'src/app/shared/types/geoJsonResult.type';
 
@@ -24,16 +22,23 @@ export class MapComponent implements AfterViewInit {
   private defaultZoomLevel: number = 8;
   private defaultMaxZoom: number = 18
   private defaultMinZoom: number = 3
-  @ViewChild("uploadFileModal") uploadFileModal?: ModalComponent
+
+  @ViewChild("fileManagerModal") fileManagerModal?: ModalComponent
+  @ViewChild("fileExportModal") fileExportModal?: ModalComponent
   @Input() prefix: string = '';
   @Input() watermarkImagePath: string = '';
   @Input() featureCollectionInput?: GeoJsonResult;
+
+  featureCollection: GeoJsonResult = {
+    type: 'FeatureCollection',
+    features: []
+  };
 
   /**
   * Configuration for the file uploader modal.
   * @type {IModalConfig}
   */
-  modalConfig: IModalConfig = {
+  fileManagerModalConfig: IModalConfig = {
     modalTitle: 'Importar Archivo/s',
     dashboardHeader: true,
   }
@@ -42,19 +47,35 @@ export class MapComponent implements AfterViewInit {
   * Options for file uploader the modal.
   * @type {IModalOption}
   */
-  modalOption: IModalOption = {
+  fileManagerModalOption: IModalOption = {
     centered: true,
     size: 'md',
   }
+
+  /**
+  * Configuration for the file uploader modal.
+  * @type {IModalConfig}
+  */
+  fileExportModalConfig: IModalConfig = {
+    modalTitle: 'Exportar Archivo',
+    dashboardHeader: true,
+  }
+
+  /**
+  * Options for file uploader the modal.
+  * @type {IModalOption}
+  */
+  fileExportModalOption: IModalOption = {
+    centered: true,
+    size: 'md',
+  }
+
 
   /**
   * Triggers the modal to upload a file with map coordinates object.
   * @private
   * @returns {void}
   */
-  private openUploadFileMapModal() {
-    this.uploadFileModal?.open()
-  }
 
   /**
   * Initializes the map.
@@ -154,13 +175,18 @@ export class MapComponent implements AfterViewInit {
       {
         text: "Importar GeoJSON",
         onClick: () => {
-          this.openUploadFileMapModal()
+          this.fileManagerModal?.open();
         },
       },
       {
         text: "Exportar GeoJSON",
         onClick: () => {
-          this.exportGeoJson();
+          this.exportGeoJson()
+          if(this.featureCollection.features.length === 0){
+            this.toastService.errorToast("Mapa vacio", "No hay dibujos para exportar.");
+            return;
+          }
+          this.fileExportModal?.open();
         },
       },
       "cancel",
@@ -250,29 +276,19 @@ export class MapComponent implements AfterViewInit {
   * @private
   * @returns {void}
   */
-  private exportGeoJson() {
+  public exportGeoJson(): void {
+    const geojson: GeoJsonResult = {
+      type: 'FeatureCollection',
+      features: []
+    };
+
     if (this.map) {
       const geomanLayers = this.map.pm.getGeomanLayers();
-
-      const geojson: GeoJsonResult = {
-        type: 'FeatureCollection',
-        features: []
-      };
-
       geomanLayers.forEach((layer: any) => {
         const layerGeoJSON = layer.toGeoJSON();
         geojson.features.push(layerGeoJSON);
       });
-
-      console.log(geojson)
-
-      /* if (this.map?.pm.getGeomanDrawLayers().length === 0) {
-        this.toastService.showToast("error", "Error", "Se requiere dibujar algo en el mapa para poder exportar.");
-        return;
-      } */
-
-      //const blob = new Blob([JSON.stringify(this.featureGroup?.toGeoJSON())], { type: 'application/json' });
-      //saveAs(blob, 'mapa.geojson')
+      this.featureCollection = geojson;
     }
   }
 
@@ -286,7 +302,7 @@ export class MapComponent implements AfterViewInit {
     this.renderFeatureCollectionToMap(this.featureCollectionInput)
   }
 
-  constructor(private fileManagerService: FileManagerService) { }
+  constructor(private fileManagerService: FileManagerService, private toastService: ToastService) { }
 
   ngAfterViewInit(): void {
     this.initMap();
