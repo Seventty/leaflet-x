@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import "@geoman-io/leaflet-geoman-free";
 import { IModalConfig } from 'src/app/shared/modal/IModalConfig';
@@ -9,6 +9,7 @@ import { IBaseLayer } from 'src/app/shared/interfaces/IBaseLayer';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
 import { FileManagerService } from 'src/app/shared/services/file-manager/file-manager.service';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson'
+import { Watermark } from 'src/app/shared/utils/watermark.control';
 
 type GeoJsonResult = FeatureCollection<Geometry | null, GeoJsonProperties>;
 
@@ -26,6 +27,7 @@ export class MapComponent implements AfterViewInit {
   private defaultMinZoom: number = 3
   @ViewChild("uploadFileModal") uploadFileModal?: ModalComponent
   @Input() prefix: string = '';
+  @Input() watermarkImagePath: string = '';
 
   modalConfig: IModalConfig = {
     modalTitle: 'Importar Archivo/s',
@@ -164,6 +166,17 @@ export class MapComponent implements AfterViewInit {
     return icon;
   }
 
+  private watermarkConfigurator(){
+    const watermark = new Watermark(this.watermarkImagePath, { position: 'bottomleft' });
+    if(this.map) watermark.addTo(this.map);
+    /* img.src = this.watermarkImagePath;
+    img.style.width = '200px';
+    if(this.map){
+      const watermark = L.imageOverlay(img.src, this.map.getBounds());
+      watermark.addTo(this.map);
+    } */
+  }
+
   private getFeatureCollection() {
     this.fileManagerService.getFeatureCollection().subscribe((res: any) => {
       this.renderFeatureCollectionToMap(res)
@@ -178,7 +191,7 @@ export class MapComponent implements AfterViewInit {
 
 
   /* mover esto a un servicio */
-  exportGeoJson() {
+  private exportGeoJson() {
     if (this.map) {
       const geomanLayers = this.map.pm.getGeomanLayers();
 
@@ -212,6 +225,7 @@ export class MapComponent implements AfterViewInit {
     this.geomanControllers();
     this.customToolbar();
     this.switchBaseLayer();
+    this.watermarkConfigurator()
     this.getFeatureCollection();
   }
 }
