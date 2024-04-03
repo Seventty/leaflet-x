@@ -173,13 +173,13 @@ export class MapComponent implements AfterViewInit {
   private customToolbar() {
     const customToolbarActions: any = [
       {
-        text: "Importar GeoJSON",
+        text: "Importar archivo/s",
         onClick: () => {
           this.fileManagerModal?.open();
         },
       },
       {
-        text: "Exportar GeoJSON",
+        text: "Exportar archivo/s",
         onClick: () => {
           this.exportGeoJson()
           if(this.featureCollection.features.length === 0){
