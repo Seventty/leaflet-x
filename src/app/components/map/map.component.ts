@@ -39,6 +39,9 @@ export class MapComponent implements AfterViewInit {
     size: 'md',
   }
 
+  /**
+    @description This method trigger the modal to upload a file with map coordinates object
+  */
   private openUploadFileMapModal() {
     this.uploadFileModal?.open()
   }
@@ -166,15 +169,9 @@ export class MapComponent implements AfterViewInit {
     return icon;
   }
 
-  private watermarkConfigurator(){
+  private watermarkConfigurator() {
     const watermark = new Watermark(this.watermarkImagePath, { position: 'bottomleft' });
-    if(this.map) watermark.addTo(this.map);
-    /* img.src = this.watermarkImagePath;
-    img.style.width = '200px';
-    if(this.map){
-      const watermark = L.imageOverlay(img.src, this.map.getBounds());
-      watermark.addTo(this.map);
-    } */
+    if (this.map) watermark.addTo(this.map);
   }
 
   private getFeatureCollectionFromFile() {
@@ -188,7 +185,6 @@ export class MapComponent implements AfterViewInit {
       L.geoJSON(featureCollection).addTo(this.map);
     }
   }
-
 
   /* mover esto a un servicio */
   private exportGeoJson() {
@@ -217,8 +213,9 @@ export class MapComponent implements AfterViewInit {
     }
   }
 
-  drawInputFeatureCollectionIntoMap() {
-    if(!this.featureCollectionInput) return;
+
+  private drawInputFeatureCollectionIntoMap() {
+    if (!this.featureCollectionInput) return;
     this.renderFeatureCollectionToMap(this.featureCollectionInput)
   }
 
