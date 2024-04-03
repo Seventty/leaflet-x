@@ -1,0 +1,7 @@
+<div class="container grid-button">
+  <div class="row">
+    <div class="col-md-4" *ngFor="let format of exportFormats">
+      <button type="button" class="btn btn-block btn-lg mb-3 w-100" [ngClass]="format.colorClass" (click)="format.action()">{{ format.title }}</button>
+    </div>
+  </div>
+</div>
