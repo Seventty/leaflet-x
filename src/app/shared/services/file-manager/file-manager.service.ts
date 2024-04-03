@@ -5,9 +5,9 @@ import * as toGeoJson from "@tmcw/togeojson";
 import { ToastService } from '../toast/toast.service';
 import * as osmtogeojsonModule from 'osmtogeojson';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson'
+import { GeoJsonResult } from '../../types/geoJsonResult.type';
 import { GeoJsonNormalize } from '../../utils/geoJsonNormalize';
 
-type GeoJsonResult = FeatureCollection<Geometry | null, GeoJsonProperties>;
 @Injectable({
   providedIn: 'root'
 })

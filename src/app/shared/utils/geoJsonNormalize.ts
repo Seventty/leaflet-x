@@ -1,6 +1,5 @@
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson'
-
-type GeoJsonResult = FeatureCollection<Geometry | null, GeoJsonProperties>;
+import { GeoJsonResult } from '../types/geoJsonResult.type';
 
 export class GeoJsonNormalize {
   private types = {

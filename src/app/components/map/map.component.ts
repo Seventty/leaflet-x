@@ -8,9 +8,7 @@ import { saveAs } from 'file-saver';
 import { IBaseLayer } from 'src/app/shared/interfaces/IBaseLayer';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
 import { FileManagerService } from 'src/app/shared/services/file-manager/file-manager.service';
-import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson'
-
-type GeoJsonResult = FeatureCollection<Geometry | null, GeoJsonProperties>;
+import { GeoJsonResult } from 'src/app/shared/types/geoJsonResult.type';
 
 @Component({
   selector: 'app-map',
