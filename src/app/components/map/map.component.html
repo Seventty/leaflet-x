@@ -5,6 +5,6 @@
 </div>
 
 <UIModal [modalConfig]="modalConfig" [modalOption]="modalOption" #uploadFileModal>
-  <UIFileUpload></UIFileUpload>
+  <UIFileUpload [modalReference]="uploadFileModal"></UIFileUpload>
 </UIModal>
 
