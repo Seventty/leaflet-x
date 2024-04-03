@@ -29,23 +29,38 @@ export class MapComponent implements AfterViewInit {
   @Input() watermarkImagePath: string = '';
   @Input() featureCollectionInput?: GeoJsonResult;
 
+  /**
+  * Configuration for the file uploader modal.
+  * @type {IModalConfig}
+  */
   modalConfig: IModalConfig = {
     modalTitle: 'Importar Archivo/s',
     dashboardHeader: true,
   }
 
+  /**
+  * Options for file uploader the modal.
+  * @type {IModalOption}
+  */
   modalOption: IModalOption = {
     centered: true,
     size: 'md',
   }
 
   /**
-    @description This method trigger the modal to upload a file with map coordinates object
+  * Triggers the modal to upload a file with map coordinates object.
+  * @private
+  * @returns {void}
   */
   private openUploadFileMapModal() {
     this.uploadFileModal?.open()
   }
 
+  /**
+  * Initializes the map.
+  * @private
+  * @returns {void}
+  */
   private initMap(): void {
     this.map = L.map('map', {
       center: this.defaultMapLocation,
@@ -54,11 +69,21 @@ export class MapComponent implements AfterViewInit {
     });
   }
 
+  /**
+  * Sets up the feature group.
+  * @private
+  * @returns {void}
+  */
   private setFeatureGroup() {
     this.featureGroup = new L.FeatureGroup();
     this.map?.addLayer(this.featureGroup)
   }
 
+  /**
+  * Switches the base layer of the map.
+  * @private
+  * @returns {void}
+  */
   private switchBaseLayer(): void {
     /* All free BaseLayer available > https://leaflet-extras.github.io/leaflet-providers/preview/ */
 
@@ -83,6 +108,11 @@ export class MapComponent implements AfterViewInit {
     }
   }
 
+  /**
+  * Sets up Geoman controllers for the map.
+  * @private
+  * @returns {void}
+  */
   private geomanControllers() {
     if (this.map) {
       this.map.attributionControl.setPrefix(this.prefix);
@@ -114,6 +144,11 @@ export class MapComponent implements AfterViewInit {
     }
   }
 
+  /**
+  * Configures a custom toolbar for the map.
+  * @private
+  * @returns {void}
+  */
   private customToolbar() {
     const customToolbarActions: any = [
       {
@@ -141,6 +176,12 @@ export class MapComponent implements AfterViewInit {
     }
   }
 
+  /**
+  * Creates a custom icon for marker.
+  * @private
+  * @param {string} color - Color of the marker.
+  * @returns {L.DivIcon} - Leaflet DivIcon object.
+  */
   private iconMarker(color: string): L.DivIcon {
     const markerHtmlStyles = `
     background: ${color};
@@ -169,24 +210,46 @@ export class MapComponent implements AfterViewInit {
     return icon;
   }
 
+  /**
+  * Configures watermark on the map.
+  * @private
+  * @returns {void}
+  */
   private watermarkConfigurator() {
     const watermark = new Watermark(this.watermarkImagePath, { position: 'bottomleft' });
     if (this.map) watermark.addTo(this.map);
   }
 
+  /**
+  * Fetches feature collection from file.
+  * @private
+  * @returns {void}
+  */
   private getFeatureCollectionFromFile() {
     this.fileManagerService.getFileFeatureCollection().subscribe((res: any) => {
       this.renderFeatureCollectionToMap(res)
     })
   }
 
+  /**
+  * Renders feature collection on the map.
+  * @private
+  * @param {GeoJsonResult} featureCollection - Feature collection to render.
+  * @returns {void}
+  */
   private renderFeatureCollectionToMap(featureCollection: GeoJsonResult) {
     if (this.map) {
       L.geoJSON(featureCollection).addTo(this.map);
     }
   }
 
-  /* mover esto a un servicio */
+
+  /* Move this to a service */
+  /**
+  * Exports GeoJSON from the map.
+  * @private
+  * @returns {void}
+  */
   private exportGeoJson() {
     if (this.map) {
       const geomanLayers = this.map.pm.getGeomanLayers();
@@ -213,7 +276,11 @@ export class MapComponent implements AfterViewInit {
     }
   }
 
-
+  /**
+  * Draw the incomming Feature Collection from Input into map
+  * @private
+  * @returns {void}
+  */
   private drawInputFeatureCollectionIntoMap() {
     if (!this.featureCollectionInput) return;
     this.renderFeatureCollectionToMap(this.featureCollectionInput)
