@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { GeoJsonResult } from './shared/types/geoJsonResult.type';
 
 @Component({
   selector: 'app-root',

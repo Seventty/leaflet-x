@@ -10,8 +10,7 @@ import { ToastService } from 'src/app/shared/services/toast/toast.service';
 import { FileManagerService } from 'src/app/shared/services/file-manager/file-manager.service';
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson'
 import { Watermark } from 'src/app/shared/utils/watermark.control';
-
-type GeoJsonResult = FeatureCollection<Geometry | null, GeoJsonProperties>;
+import { GeoJsonResult } from 'src/app/shared/types/geoJsonResult.type';
 
 @Component({
   selector: 'app-map',
@@ -28,6 +27,7 @@ export class MapComponent implements AfterViewInit {
   @ViewChild("uploadFileModal") uploadFileModal?: ModalComponent
   @Input() prefix: string = '';
   @Input() watermarkImagePath: string = '';
+  @Input() featureCollectionInput?: GeoJsonResult;
 
   modalConfig: IModalConfig = {
     modalTitle: 'Importar Archivo/s',
@@ -177,13 +177,13 @@ export class MapComponent implements AfterViewInit {
     } */
   }
 
-  private getFeatureCollection() {
-    this.fileManagerService.getFeatureCollection().subscribe((res: any) => {
+  private getFeatureCollectionFromFile() {
+    this.fileManagerService.getFileFeatureCollection().subscribe((res: any) => {
       this.renderFeatureCollectionToMap(res)
     })
   }
 
-  private renderFeatureCollectionToMap(featureCollection: any) {
+  private renderFeatureCollectionToMap(featureCollection: GeoJsonResult) {
     if (this.map) {
       L.geoJSON(featureCollection).addTo(this.map);
     }
@@ -217,6 +217,11 @@ export class MapComponent implements AfterViewInit {
     }
   }
 
+  drawInputFeatureCollectionIntoMap() {
+    if(!this.featureCollectionInput) return;
+    this.renderFeatureCollectionToMap(this.featureCollectionInput)
+  }
+
   constructor(private fileManagerService: FileManagerService) { }
 
   ngAfterViewInit(): void {
@@ -226,6 +231,8 @@ export class MapComponent implements AfterViewInit {
     this.customToolbar();
     this.switchBaseLayer();
     this.watermarkConfigurator()
-    this.getFeatureCollection();
+    this.getFeatureCollectionFromFile();
+    this.drawInputFeatureCollectionIntoMap();
   }
+
 }
