@@ -10,6 +10,7 @@ import { FileManagerService } from 'src/app/shared/services/file-manager/file-ma
 import { Watermark } from 'src/app/shared/utils/watermark.control';
 import { GeoJsonResult } from 'src/app/shared/types/geoJsonResult.type';
 import { v4 as uuidv4 } from 'uuid';
+import { HexColorType } from 'src/app/shared/types/hexColor.type';
 
 @Component({
   selector: 'app-map',
@@ -31,6 +32,7 @@ export class MapComponent implements AfterViewInit {
   @Input() watermarkImagePath: string = '';
   @Input() featureCollectionInput?: GeoJsonResult;
   @Input() readonly: boolean = false;
+  @Input() mainColor: HexColorType = '#00b8e6';
 
   featureCollection: GeoJsonResult = {
     type: 'FeatureCollection',
@@ -158,7 +160,9 @@ export class MapComponent implements AfterViewInit {
         });
 
         const newMarker: any = this.map.pm.Toolbar.copyDrawControl('drawMarker', { name: "newMarker" })
-        newMarker.drawInstance.setOptions({ markerStyle: { icon: this.iconMarker("#00b8e6") } });
+        newMarker.drawInstance.setOptions({ markerStyle: { icon: this.iconMarker(this.mainColor) } });
+        this.map.pm.setGlobalOptions({ templineStyle: { color: this.mainColor, fillColor: this.mainColor }, hintlineStyle: { color: this.mainColor, fillColor: this.mainColor } });
+        this.map.pm.setGlobalOptions({ pathOptions: { color: this.mainColor, fillColor: this.mainColor } });
       }
     }
   }
