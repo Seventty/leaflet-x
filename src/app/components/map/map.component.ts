@@ -30,6 +30,7 @@ export class MapComponent implements AfterViewInit {
   @Input() prefix: string = '';
   @Input() watermarkImagePath: string = '';
   @Input() featureCollectionInput?: GeoJsonResult;
+  @Input() readonly: boolean = false;
 
   featureCollection: GeoJsonResult = {
     type: 'FeatureCollection',
@@ -139,24 +140,26 @@ export class MapComponent implements AfterViewInit {
         zoomOutTitle: 'Alejar'
       }).addTo(this.map);
 
-      this.map.pm.addControls({
-        position: 'topright',
-        drawCircle: false,
-        drawCircleMarker: false,
-        drawText: false,
-        drawMarker: false,
-        cutPolygon: false,
-        editControls: true,
-      });
+      if (!this.readonly) {
+        this.map.pm.addControls({
+          position: 'topright',
+          drawCircle: false,
+          drawCircleMarker: false,
+          drawText: false,
+          drawMarker: false,
+          cutPolygon: false,
+          editControls: true,
+        });
 
-      this.map.pm.setLang('es');
+        this.map.pm.setLang('es');
 
-      this.map.on('pm:create', (e: any) => {
-        this.featureGroup?.addLayer(e.layer);
-      });
+        this.map.on('pm:create', (e: any) => {
+          this.featureGroup?.addLayer(e.layer);
+        });
 
-      const newMarker: any = this.map.pm.Toolbar.copyDrawControl('drawMarker', { name: "newMarker" })
-      newMarker.drawInstance.setOptions({ markerStyle: { icon: this.iconMarker("#00b8e6") } });
+        const newMarker: any = this.map.pm.Toolbar.copyDrawControl('drawMarker', { name: "newMarker" })
+        newMarker.drawInstance.setOptions({ markerStyle: { icon: this.iconMarker("#00b8e6") } });
+      }
     }
   }
 
@@ -177,7 +180,7 @@ export class MapComponent implements AfterViewInit {
         text: "Exportar archivo/s",
         onClick: () => {
           this.exportGeoJson()
-          if(this.featureCollection.features.length === 0){
+          if (this.featureCollection.features.length === 0) {
             this.toastService.errorToast("Mapa vacio", "No hay dibujos para exportar.");
             return;
           }
@@ -297,7 +300,7 @@ export class MapComponent implements AfterViewInit {
     this.renderFeatureCollectionToMap(this.featureCollectionInput)
   }
 
-  public mapIdGenerator(){
+  public mapIdGenerator() {
     this.mapId = uuidv4();
   }
 
