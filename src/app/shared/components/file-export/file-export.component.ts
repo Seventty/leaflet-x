@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { GeoJsonResult } from '../../types/geoJsonResult.type';
 import { saveAs } from 'file-saver';
-import { topology } from "topojson-server"
+import * as topojson from "topojson-server"
+import * as geojsondsv from "geojson2dsv"
+import * as wellknown from "wellknown";
 
 @Component({
   selector: 'UIFileExport',
@@ -16,29 +17,35 @@ export class FileExportComponent implements OnInit {
 
   private downloadGeoJSON = () => {
     const blob = new Blob([JSON.stringify(this.FeatureCollectionToExport)], { type: 'application/json' });
-    saveAs(blob, 'mapa.geojson')
+    saveAs(blob, 'map.geojson')
   }
 
-  private downloadTopo() {
-    const topoContent = JSON.stringify(topology({ featureCollection: this.FeatureCollectionToExport }))
-
+  private downloadTopo = () => {
+    const topoContent = topojson.topology(
+      {
+        collection: this.FeatureCollectionToExport
+      },
+      { 'property-transform': this.allProperties }
+    )
     saveAs(new Blob([topoContent], { type: 'text/plain;charset=utf-8' }), 'mapa.topojson');
   }
 
-  private downloadDSV() {
-    console.log('Descargando CSV...');
+  private downloadDSV = () => {
+    const geoJsonDsv = geojsondsv(this.FeatureCollectionToExport);
+    saveAs(new Blob([geoJsonDsv], { type: 'text/plain;charset=utf-8' }), 'points.csv');
   }
 
-  private downloadKML() {
-    console.log('Descargando KML...');
+  private downloadKML = () => {
+    //console.log("Not available for now...")
   }
 
-  private downloadWKT() {
-    console.log('Descargando WKT...');
+  private downloadWKT = () => {
+    const wktGeoJson = this.FeatureCollectionToExport.features.map(wellknown.stringify).join('\n');
+    saveAs(new Blob([wktGeoJson], {type: 'text/plain;charset=utf-8'}),'map.wkt');
   }
 
   private downloadShp() {
-    console.log('Descargando SHP...');
+    //console.log('Descargando SHP...');
   }
 
   private allProperties(properties: any, key: any, value: any) {
@@ -68,7 +75,7 @@ export class FileExportComponent implements OnInit {
       {
         title: 'KML',
         action: this.downloadKML,
-        colorClass: 'btn-kml'
+        colorClass: 'btn-kml disabled'
       },
       {
         title: 'WKT',
@@ -81,9 +88,8 @@ export class FileExportComponent implements OnInit {
       this.exportFormats.push({
         title: 'Shapefile',
         action: this.downloadShp,
-        colorClass: 'btn-shapefile'
+        colorClass: 'btn-shapefile disabled'
       });
     }
   }
-
 }

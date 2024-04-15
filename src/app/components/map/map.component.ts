@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import "@geoman-io/leaflet-geoman-free";
 import { IModalConfig } from 'src/app/shared/modal/IModalConfig';
@@ -18,7 +18,7 @@ import { v4 as uuidv4 } from 'uuid';
 })
 export class MapComponent implements AfterViewInit {
   public mapId: string = 'map';
-  private map?: L.Map;
+  public map?: L.Map;
   private featureGroup?: L.FeatureGroup;
   private defaultMapLocation: L.LatLngExpression = [19.026319, -70.147792]
   private defaultZoomLevel: number = 8;
@@ -304,7 +304,7 @@ export class MapComponent implements AfterViewInit {
     this.mapId = uuidv4();
   }
 
-  constructor(private fileManagerService: FileManagerService, private toastService: ToastService) { }
+  constructor(private fileManagerService: FileManagerService, private toastService: ToastService, private cdr: ChangeDetectorRef) { }
 
   ngAfterViewInit(): void {
     this.initMap();
@@ -315,11 +315,10 @@ export class MapComponent implements AfterViewInit {
     this.watermarkConfigurator()
     this.getFeatureCollectionFromFile();
     this.drawInputFeatureCollectionIntoMap();
+    this.cdr.detectChanges();
   }
 
   ngOnInit(): void {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
     this.mapIdGenerator();
   }
 }
