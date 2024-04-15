@@ -9,6 +9,7 @@ import { ToastService } from 'src/app/shared/services/toast/toast.service';
 import { FileManagerService } from 'src/app/shared/services/file-manager/file-manager.service';
 import { Watermark } from 'src/app/shared/utils/watermark.control';
 import { GeoJsonResult } from 'src/app/shared/types/geoJsonResult.type';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-map',
@@ -16,6 +17,7 @@ import { GeoJsonResult } from 'src/app/shared/types/geoJsonResult.type';
   styleUrls: ['./map.component.scss'],
 })
 export class MapComponent implements AfterViewInit {
+  public mapId: string = 'map';
   private map?: L.Map;
   private featureGroup?: L.FeatureGroup;
   private defaultMapLocation: L.LatLngExpression = [19.026319, -70.147792]
@@ -70,20 +72,13 @@ export class MapComponent implements AfterViewInit {
     size: 'md',
   }
 
-
-  /**
-  * Triggers the modal to upload a file with map coordinates object.
-  * @private
-  * @returns {void}
-  */
-
   /**
   * Initializes the map.
   * @private
   * @returns {void}
   */
   private initMap(): void {
-    this.map = L.map('map', {
+    this.map = L.map(this.mapId, {
       center: this.defaultMapLocation,
       zoom: this.defaultZoomLevel,
       zoomControl: false,
@@ -302,6 +297,10 @@ export class MapComponent implements AfterViewInit {
     this.renderFeatureCollectionToMap(this.featureCollectionInput)
   }
 
+  public mapIdGenerator(){
+    this.mapId = uuidv4();
+  }
+
   constructor(private fileManagerService: FileManagerService, private toastService: ToastService) { }
 
   ngAfterViewInit(): void {
@@ -313,5 +312,11 @@ export class MapComponent implements AfterViewInit {
     this.watermarkConfigurator()
     this.getFeatureCollectionFromFile();
     this.drawInputFeatureCollectionIntoMap();
+  }
+
+  ngOnInit(): void {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+    this.mapIdGenerator();
   }
 }
