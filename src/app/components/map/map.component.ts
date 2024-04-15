@@ -314,5 +314,4 @@ export class MapComponent implements AfterViewInit {
     this.getFeatureCollectionFromFile();
     this.drawInputFeatureCollectionIntoMap();
   }
-
 }
