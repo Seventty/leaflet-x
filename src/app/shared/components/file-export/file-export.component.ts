@@ -73,14 +73,14 @@ export class FileExportComponent implements OnInit {
         colorClass: 'btn-csv'
       },
       {
-        title: 'KML',
-        action: this.downloadKML,
-        colorClass: 'btn-kml disabled'
-      },
-      {
         title: 'WKT',
         action: this.downloadWKT,
         colorClass: 'btn-wkt'
+      },
+      {
+        title: 'KML',
+        action: this.downloadKML,
+        colorClass: 'btn-outline-secondary disabled'
       },
     ];
 
@@ -88,7 +88,7 @@ export class FileExportComponent implements OnInit {
       this.exportFormats.push({
         title: 'Shapefile',
         action: this.downloadShp,
-        colorClass: 'btn-shapefile disabled'
+        colorClass: 'btn-outline-secondary disabled'
       });
     }
   }
