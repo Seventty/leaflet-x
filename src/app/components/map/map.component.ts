@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import "@geoman-io/leaflet-geoman-free";
 import { IModalConfig } from 'src/app/shared/modal/IModalConfig';
@@ -19,7 +19,7 @@ import { HexColorType } from 'src/app/shared/types/hexColor.type';
 })
 export class MapComponent implements AfterViewInit {
   public mapId: string = 'map';
-  public map?: L.Map;
+  private map?: L.Map;
   private featureGroup?: L.FeatureGroup;
   private defaultMapLocation: L.LatLngExpression = [19.026319, -70.147792]
   private defaultZoomLevel: number = 8;
@@ -33,6 +33,7 @@ export class MapComponent implements AfterViewInit {
   @Input() featureCollectionInput?: GeoJsonResult;
   @Input() readonly: boolean = false;
   @Input() mainColor: HexColorType = '#00b8e6';
+  @Output() FeatureCollectionOutput: EventEmitter<GeoJsonResult> = new EventEmitter<GeoJsonResult>()
 
   featureCollection: GeoJsonResult = {
     type: 'FeatureCollection',
@@ -161,8 +162,11 @@ export class MapComponent implements AfterViewInit {
 
         const newMarker: any = this.map.pm.Toolbar.copyDrawControl('drawMarker', { name: "newMarker" })
         newMarker.drawInstance.setOptions({ markerStyle: { icon: this.iconMarker(this.mainColor) } });
-        this.map.pm.setGlobalOptions({ templineStyle: { color: this.mainColor, fillColor: this.mainColor }, hintlineStyle: { color: this.mainColor, fillColor: this.mainColor } });
-        this.map.pm.setGlobalOptions({ pathOptions: { color: this.mainColor, fillColor: this.mainColor } });
+        this.map.pm.setPathOptions({
+          color: this.mainColor,
+          fillColor: this.mainColor,
+          fillOpacity: 0.4,
+        });
       }
     }
   }
@@ -308,6 +312,20 @@ export class MapComponent implements AfterViewInit {
     this.mapId = uuidv4();
   }
 
+  public getMapGeoJson() {
+    this.exportGeoJson();
+    this.FeatureCollectionOutput.emit(this.featureCollection)
+  }
+
+  private mapEventsHandler() {
+    // Handle events to update the FeatureCollection
+    if (this.map) {
+      this.map.on('pm:create pm:edit pm:remove pm:dragend pm:cut', (e) => {
+        console.log('GeoJSON action:', e);
+      });
+    }
+  }
+
   constructor(private fileManagerService: FileManagerService, private toastService: ToastService, private cdr: ChangeDetectorRef) { }
 
   ngAfterViewInit(): void {
@@ -319,6 +337,7 @@ export class MapComponent implements AfterViewInit {
     this.watermarkConfigurator()
     this.getFeatureCollectionFromFile();
     this.drawInputFeatureCollectionIntoMap();
+    this.mapEventsHandler();
     this.cdr.detectChanges();
   }
 

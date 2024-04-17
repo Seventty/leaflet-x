@@ -1,8 +1,10 @@
 <div class="container-fluid">
+  <div>
+  </div>
   <div class="row">
     <div class="col-md-12">
       <div class="top-half">
-        <app-map [prefix]="mapPrefix"></app-map>
+        <app-map (FeatureCollectionOutput)="handleFeatureCollectionOutput($event)" [prefix]="mapPrefix"></app-map>
       </div>
     </div>
   </div>
