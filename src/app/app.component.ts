@@ -13,11 +13,6 @@ export class AppComponent {
 
   featureCollectionFromMap?: GeoJsonResult;
 
-
-  handleFeatureCollectionOutput(event: GeoJsonResult){
-    console.log(event)
-  }
-
   ngOnInit(): void {
   }
 }

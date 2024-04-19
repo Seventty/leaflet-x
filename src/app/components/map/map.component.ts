@@ -33,7 +33,6 @@ export class MapComponent implements AfterViewInit {
   @Input() featureCollectionInput?: GeoJsonResult;
   @Input() readonly: boolean = false;
   @Input() mainColor: HexColorType = '#00b8e6';
-  @Output() FeatureCollectionOutput: EventEmitter<GeoJsonResult> = new EventEmitter<GeoJsonResult>()
 
   featureCollection: GeoJsonResult = {
     type: 'FeatureCollection',
@@ -312,10 +311,9 @@ export class MapComponent implements AfterViewInit {
     this.mapId = uuidv4();
   }
 
-  public getMapGeoJson() {
+  /* public getMapGeoJson() {
     this.exportGeoJson();
-    this.FeatureCollectionOutput.emit(this.featureCollection)
-  }
+  } */
 
   private mapEventsHandler() {
     // Handle events to update the FeatureCollection
