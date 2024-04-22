@@ -13,6 +13,10 @@ export class AppComponent {
 
   featureCollectionFromMap?: GeoJsonResult;
 
+  watchFeatureCollection(e){
+    console.log("Emit from appcomponent", e)
+  }
+
   ngOnInit(): void {
   }
 }

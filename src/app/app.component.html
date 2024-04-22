@@ -4,7 +4,7 @@
   <div class="row">
     <div class="col-md-12">
       <div class="top-half">
-        <app-map [prefix]="mapPrefix"></app-map>
+        <app-map (featureCollectionOutput)="watchFeatureCollection($event)" [prefix]="mapPrefix"></app-map>
       </div>
     </div>
   </div>

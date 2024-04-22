@@ -187,7 +187,7 @@ export class MapComponent implements AfterViewInit {
       {
         text: "Exportar archivo/s",
         onClick: () => {
-          this.updateFeatureCollection()
+          this.featureCollectionUpdate()
           if (this.featureCollection.features.length === 0) {
             this.toastService.errorToast("Mapa vacio", "No hay dibujos para exportar.");
             return;
@@ -272,7 +272,7 @@ export class MapComponent implements AfterViewInit {
   private renderFeatureCollectionToMap(featureCollection: GeoJsonResult) {
     if (this.map) {
       L.geoJSON(featureCollection).addTo(this.map);
-      this.updateFeatureCollection();
+      this.featureCollectionUpdate();
     }
   }
 
@@ -281,7 +281,7 @@ export class MapComponent implements AfterViewInit {
   * @private
   * @returns {void}
   */
-  public updateFeatureCollection(): void {
+  public featureCollectionUpdate(): void {
     const geojson: GeoJsonResult = {
       type: 'FeatureCollection',
       features: []
@@ -295,7 +295,6 @@ export class MapComponent implements AfterViewInit {
       });
       this.featureCollection = geojson;
       this.featureCollectionOutput.emit(this.featureCollection);
-      console.log("Feature collection updated", this.featureCollection)
     }
   }
 
@@ -320,8 +319,8 @@ export class MapComponent implements AfterViewInit {
   private mapEventsHandler() {
     // Handle events to update the FeatureCollection
     if (this.map) {
-      this.map.on('pm:create pm:edit pm:remove pm:cut pm:rotateend pm:vertexadded pm:vertexremoved pm:update pm:change pm:globaldragmodetoggled pm:globaleditmodetoggled', (e) => {
-        console.log('GeoJSON action triggered 🔫:', e);
+      this.map.on('pm:create pm:edit pm:remove pm:cut pm:rotateend pm:globaldragmodetoggled pm:globaleditmodetoggled', (e) => {
+        this.featureCollectionUpdate()
       });
     }
   }
