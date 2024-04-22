@@ -33,6 +33,7 @@ export class MapComponent implements AfterViewInit {
   @Input() featureCollectionInput?: GeoJsonResult;
   @Input() readonly: boolean = false;
   @Input() mainColor: HexColorType = '#00b8e6';
+  @Output() featureCollectionOutput: EventEmitter<GeoJsonResult> = new EventEmitter<GeoJsonResult>()
 
   featureCollection: GeoJsonResult = {
     type: 'FeatureCollection',
@@ -149,11 +150,11 @@ export class MapComponent implements AfterViewInit {
           drawCircleMarker: false,
           drawText: false,
           drawMarker: false,
-          cutPolygon: false,
+          cutPolygon: true,
           editControls: true,
         });
 
-        this.map.pm.setLang('es');
+        //this.map.pm.setLang('es');
 
         this.map.on('pm:create', (e: any) => {
           this.featureGroup?.addLayer(e.layer);
@@ -186,7 +187,7 @@ export class MapComponent implements AfterViewInit {
       {
         text: "Exportar archivo/s",
         onClick: () => {
-          this.exportGeoJson()
+          this.updateFeatureCollection()
           if (this.featureCollection.features.length === 0) {
             this.toastService.errorToast("Mapa vacio", "No hay dibujos para exportar.");
             return;
@@ -271,17 +272,16 @@ export class MapComponent implements AfterViewInit {
   private renderFeatureCollectionToMap(featureCollection: GeoJsonResult) {
     if (this.map) {
       L.geoJSON(featureCollection).addTo(this.map);
+      this.updateFeatureCollection();
     }
   }
 
-
-  /* Move this to a service */
   /**
   * Exports GeoJSON from the map.
   * @private
   * @returns {void}
   */
-  public exportGeoJson(): void {
+  public updateFeatureCollection(): void {
     const geojson: GeoJsonResult = {
       type: 'FeatureCollection',
       features: []
@@ -294,6 +294,8 @@ export class MapComponent implements AfterViewInit {
         geojson.features.push(layerGeoJSON);
       });
       this.featureCollection = geojson;
+      this.featureCollectionOutput.emit(this.featureCollection);
+      console.log("Feature collection updated", this.featureCollection)
     }
   }
 
@@ -318,8 +320,8 @@ export class MapComponent implements AfterViewInit {
   private mapEventsHandler() {
     // Handle events to update the FeatureCollection
     if (this.map) {
-      this.map.on('pm:create pm:edit pm:remove pm:dragend pm:cut', (e) => {
-        console.log('GeoJSON action:', e);
+      this.map.on('pm:create pm:edit pm:remove pm:cut pm:rotateend pm:vertexadded pm:vertexremoved pm:update pm:change pm:globaldragmodetoggled pm:globaleditmodetoggled', (e) => {
+        console.log('GeoJSON action triggered 🔫:', e);
       });
     }
   }
