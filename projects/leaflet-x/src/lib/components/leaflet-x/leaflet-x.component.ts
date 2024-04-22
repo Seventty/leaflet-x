@@ -13,7 +13,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Watermark } from '../../shared/utils/watermark.control';
 
 @Component({
-  selector: 'leafletX',
+  selector: 'leaflet-x',
   templateUrl: './leaflet-x.component.html',
   styleUrls: ['./leaflet-x.component.scss']
 })

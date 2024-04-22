@@ -2,17 +2,18 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
-import { MapComponent } from './components/map/map.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
+import { ComponentsModule } from './components/components.module';
+import { LeafletXModule } from 'LeafletX';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
     NgbModule,
+    LeafletXModule
   ],
   providers: [],
   bootstrap: [AppComponent]

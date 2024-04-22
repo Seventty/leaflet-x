@@ -11,8 +11,6 @@ import { FileExportComponent } from './components/file-export/file-export.compon
     CommonModule,
     BrowserModule,
     FileUploadModule,
-    FileExportComponent,
-    ModalComponent
   ],
   declarations: [
     ModalComponent,
