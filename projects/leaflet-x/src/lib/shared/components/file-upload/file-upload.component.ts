@@ -1,9 +1,12 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, OnInit, Output, ViewChild } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
-import { environment } from '../../../environments/environment'
-import { FileUploader } from 'ng2-file-upload'
+import { FileItem, FileUploader, FileUploaderOptions } from 'ng2-file-upload'
+import { map, tap } from 'rxjs/operators'
+import Swal from 'sweetalert2'
 import { ToastService } from '../../services/toast/toast.service'
 import { FileManagerService } from '../../services/file-manager/file-manager.service'
+import { ModalComponent } from '../../modal/modal.component'
+import { environment } from '../../../environments/environment'
 
 
 @Component({
@@ -28,6 +31,7 @@ export class FileUploadComponent implements OnInit, ControlValueAccessor {
   @Input() fileType: Array<string> = environment.allowedMapFileTypes;
   @Input() maxFileSize: number = environment.appMaxFileSize;
   @Input() mimeType: Array<string> = environment.allowedMapMimeTypes;
+  @Input() modalReference?: ModalComponent
 
   //@Output() onFileAdded: EventEmitter<any> = new EventEmitter()
   multiple: boolean = false
@@ -123,6 +127,7 @@ export class FileUploadComponent implements OnInit, ControlValueAccessor {
 
   public sendFiles(){
     this.fileManager.sendFilesUploaded(this.uploadedFiles)
+    this.modalReference?.close()
   }
 
 }

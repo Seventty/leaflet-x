@@ -15,12 +15,16 @@
     "rxjs",
     "sweetalert2",
     "topojson-client",
+    "topojson-server",
+    "shp-write",
+    "uuid",
     "@types/file-saver",
     "@types/jasmine",
     "@types/leaflet",
     "@types/node",
     "@types/osmtogeojson",
-    "@types/topojson-client"
+    "@types/topojson-client",
+    "@types/uuid"
   ],
   "lib": {
     "entryFile": "src/public-api.ts"

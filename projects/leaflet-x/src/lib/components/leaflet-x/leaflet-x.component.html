@@ -1,10 +1,13 @@
 <div class="map-container">
   <div class="map-frame">
-    <div id="map"></div>
+    <div class="map" [id]="mapId"></div>
   </div>
 </div>
 
-<UIModal [modalConfig]="modalConfig" [modalOption]="modalOption" #uploadFileModal>
-  <UIFileUpload></UIFileUpload>
+<UIModal [modalConfig]="fileManagerModalConfig" [modalOption]="fileManagerModalOption" #fileManagerModal>
+  <UIFileUpload [modalReference]="fileManagerModal"></UIFileUpload>
 </UIModal>
 
+<UIModal [modalConfig]="fileExportModalConfig" [modalOption]="fileExportModalOption" #fileExportModal>
+  <UIFileExport [FeatureCollectionToExport]="featureCollection"></UIFileExport>
+</UIModal>

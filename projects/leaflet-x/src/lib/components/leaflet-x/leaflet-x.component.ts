@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { ModalComponent } from '../../shared/modal/modal.component';
 import { IModalConfig } from '../../shared/modal/IModalConfig';
 import { IModalOption } from '../../shared/modal/IModalOptions';
@@ -6,49 +6,105 @@ import * as L from 'leaflet';
 import "@geoman-io/leaflet-geoman-free";
 import { IBaseLayer } from '../../shared/interfaces/IBaseLayer';
 import { FileManagerService } from '../../shared/services/file-manager/file-manager.service';
+import { GeoJsonResult } from '../../shared/types/geoJsonResult.type';
+import { HexColorType } from '../../shared/types/hexColor.type';
+import { ToastService } from '../../shared/services/toast/toast.service';
+import { v4 as uuidv4 } from 'uuid';
+import { Watermark } from '../../shared/utils/watermark.control';
 
 @Component({
   selector: 'leafletX',
   templateUrl: './leaflet-x.component.html',
   styleUrls: ['./leaflet-x.component.scss']
 })
+
 export class LeafletXComponent implements AfterViewInit {
+  public mapId: string = 'map';
   private map?: L.Map;
   private featureGroup?: L.FeatureGroup;
   private defaultMapLocation: L.LatLngExpression = [19.026319, -70.147792]
   private defaultZoomLevel: number = 8;
   private defaultMaxZoom: number = 18
   private defaultMinZoom: number = 3
-  @ViewChild("uploadFileModal") uploadFileModal?: ModalComponent
-  @Input() prefix: string = '';
 
-  modalConfig: IModalConfig = {
+  @ViewChild("fileManagerModal") fileManagerModal?: ModalComponent
+  @ViewChild("fileExportModal") fileExportModal?: ModalComponent
+  @Input() prefix: string = '';
+  @Input() watermarkImagePath: string = '';
+  @Input() featureCollectionInput?: GeoJsonResult;
+  @Input() readonly: boolean = false;
+  @Input() mainColor: HexColorType = '#00b8e6';
+  @Output() featureCollectionOutput: EventEmitter<GeoJsonResult> = new EventEmitter<GeoJsonResult>()
+
+  featureCollection: GeoJsonResult = {
+    type: 'FeatureCollection',
+    features: []
+  };
+
+  /**
+  * Configuration for the file uploader modal.
+  * @type {IModalConfig}
+  */
+  fileManagerModalConfig: IModalConfig = {
     modalTitle: 'Importar Archivo/s',
     dashboardHeader: true,
   }
 
-  modalOption: IModalOption = {
+  /**
+  * Options for file uploader the modal.
+  * @type {IModalOption}
+  */
+  fileManagerModalOption: IModalOption = {
     centered: true,
     size: 'md',
   }
 
-  private openUploadFileMapModal() {
-    this.uploadFileModal?.open()
+  /**
+  * Configuration for the file uploader modal.
+  * @type {IModalConfig}
+  */
+  fileExportModalConfig: IModalConfig = {
+    modalTitle: 'Exportar Archivo',
+    dashboardHeader: true,
   }
 
+  /**
+  * Options for file uploader the modal.
+  * @type {IModalOption}
+  */
+  fileExportModalOption: IModalOption = {
+    centered: true,
+    size: 'md',
+  }
+
+  /**
+  * Initializes the map.
+  * @private
+  * @returns {void}
+  */
   private initMap(): void {
-    this.map = L.map('map', {
+    this.map = L.map(this.mapId, {
       center: this.defaultMapLocation,
       zoom: this.defaultZoomLevel,
       zoomControl: false,
     });
   }
 
+  /**
+  * Sets up the feature group.
+  * @private
+  * @returns {void}
+  */
   private setFeatureGroup() {
     this.featureGroup = new L.FeatureGroup();
     this.map?.addLayer(this.featureGroup)
   }
 
+  /**
+  * Switches the base layer of the map.
+  * @private
+  * @returns {void}
+  */
   private switchBaseLayer(): void {
     /* All free BaseLayer available > https://leaflet-extras.github.io/leaflet-providers/preview/ */
 
@@ -73,6 +129,11 @@ export class LeafletXComponent implements AfterViewInit {
     }
   }
 
+  /**
+  * Sets up Geoman controllers for the map.
+  * @private
+  * @returns {void}
+  */
   private geomanControllers() {
     if (this.map) {
       this.map.attributionControl.setPrefix(this.prefix);
@@ -83,40 +144,56 @@ export class LeafletXComponent implements AfterViewInit {
         zoomOutTitle: 'Alejar'
       }).addTo(this.map);
 
-      this.map.pm.addControls({
-        position: 'topright',
-        drawCircle: false,
-        drawCircleMarker: false,
-        drawText: false,
-        drawMarker: false,
-        cutPolygon: false,
-        editControls: true,
-      });
+      if (!this.readonly) {
+        this.map.pm.addControls({
+          position: 'topright',
+          drawCircle: false,
+          drawCircleMarker: false,
+          drawText: false,
+          drawMarker: false,
+          cutPolygon: true,
+          editControls: true,
+        });
 
-      this.map.pm.setLang('es');
+        //this.map.pm.setLang('es');
 
-      this.map.on('pm:create', (e: any) => {
-        this.featureGroup?.addLayer(e.layer);
-        console.log(this.featureGroup)
-      });
+        this.map.on('pm:create', (e: any) => {
+          this.featureGroup?.addLayer(e.layer);
+        });
 
-      const newMarker: any = this.map.pm.Toolbar.copyDrawControl('drawMarker', { name: "newMarker" })
-      newMarker.drawInstance.setOptions({ markerStyle: { icon: this.iconMarker("#00b8e6") } });
+        const newMarker: any = this.map.pm.Toolbar.copyDrawControl('drawMarker', { name: "newMarker" })
+        newMarker.drawInstance.setOptions({ markerStyle: { icon: this.iconMarker(this.mainColor) } });
+        this.map.pm.setPathOptions({
+          color: this.mainColor,
+          fillColor: this.mainColor,
+          fillOpacity: 0.4,
+        });
+      }
     }
   }
 
+  /**
+  * Configures a custom toolbar for the map.
+  * @private
+  * @returns {void}
+  */
   private customToolbar() {
     const customToolbarActions: any = [
       {
-        text: "Importar GeoJSON",
+        text: "Importar archivo/s",
         onClick: () => {
-          this.openUploadFileMapModal()
+          this.fileManagerModal?.open();
         },
       },
       {
-        text: "Exportar GeoJSON",
+        text: "Exportar archivo/s",
         onClick: () => {
-          this.exportGeoJson();
+          this.featureCollectionUpdate()
+          if (this.featureCollection.features.length === 0) {
+            this.toastService.errorToast("Mapa vacio", "No hay dibujos para exportar.");
+            return;
+          }
+          this.fileExportModal?.open();
         },
       },
       "cancel",
@@ -132,6 +209,12 @@ export class LeafletXComponent implements AfterViewInit {
     }
   }
 
+  /**
+  * Creates a custom icon for marker.
+  * @private
+  * @param {string} color - Color of the marker.
+  * @returns {L.DivIcon} - Leaflet DivIcon object.
+  */
   private iconMarker(color: string): L.DivIcon {
     const markerHtmlStyles = `
     background: ${color};
@@ -160,34 +243,90 @@ export class LeafletXComponent implements AfterViewInit {
     return icon;
   }
 
-  private getFeatureCollection() {
-    this.fileManagerService.getFeatureCollection().subscribe((res: any) => {
+  /**
+  * Configures watermark on the map.
+  * @private
+  * @returns {void}
+  */
+  private watermarkConfigurator() {
+    const watermark = new Watermark(this.watermarkImagePath, { position: 'bottomleft' });
+    if (this.map) watermark.addTo(this.map);
+  }
+
+  /**
+  * Fetches feature collection from file.
+  * @private
+  * @returns {void}
+  */
+  private getFeatureCollectionFromFile() {
+    this.fileManagerService.getFileFeatureCollection().subscribe((res: any) => {
       this.renderFeatureCollectionToMap(res)
     })
   }
 
-  private renderFeatureCollectionToMap(featureCollection: any) {
+  /**
+  * Renders feature collection on the map.
+  * @private
+  * @param {GeoJsonResult} featureCollection - Feature collection to render.
+  * @returns {void}
+  */
+  private renderFeatureCollectionToMap(featureCollection: GeoJsonResult) {
     if (this.map) {
       L.geoJSON(featureCollection).addTo(this.map);
+      this.featureCollectionUpdate();
     }
   }
 
+  /**
+  * Exports GeoJSON from the map.
+  * @private
+  * @returns {void}
+  */
+  public featureCollectionUpdate(): void {
+    const geojson: GeoJsonResult = {
+      type: 'FeatureCollection',
+      features: []
+    };
 
-  /* mover esto a un servicio */
-  exportGeoJson() {
     if (this.map) {
-      console.log(this.map.pm.getGeomanLayers())
-      /* if (this.map?.pm.getGeomanDrawLayers().length === 0) {
-        this.toastService.showToast("error", "Error", "Se requiere dibujar algo en el mapa para poder exportar.");
-        return;
-      } */
-
-      //const blob = new Blob([JSON.stringify(this.featureGroup?.toGeoJSON())], { type: 'application/json' });
-      //saveAs(blob, 'mapa.geojson')
+      const geomanLayers = this.map.pm.getGeomanLayers();
+      geomanLayers.forEach((layer: any) => {
+        const layerGeoJSON = layer.toGeoJSON();
+        geojson.features.push(layerGeoJSON);
+      });
+      this.featureCollection = geojson;
+      this.featureCollectionOutput.emit(this.featureCollection);
     }
   }
 
-  constructor(private fileManagerService: FileManagerService) { }
+  /**
+  * Draw the incomming Feature Collection from Input into map
+  * @private
+  * @returns {void}
+  */
+  private drawInputFeatureCollectionIntoMap() {
+    if (!this.featureCollectionInput) return;
+    this.renderFeatureCollectionToMap(this.featureCollectionInput)
+  }
+
+  public mapIdGenerator() {
+    this.mapId = uuidv4();
+  }
+
+  /* public getMapGeoJson() {
+    this.exportGeoJson();
+  } */
+
+  private mapEventsHandler() {
+    // Handle events to update the FeatureCollection
+    if (this.map) {
+      this.map.on('pm:create pm:edit pm:remove pm:cut pm:rotateend pm:globaldragmodetoggled pm:globaleditmodetoggled', (e) => {
+        this.featureCollectionUpdate()
+      });
+    }
+  }
+
+  constructor(private fileManagerService: FileManagerService, private toastService: ToastService, private cdr: ChangeDetectorRef) { }
 
   ngAfterViewInit(): void {
     this.initMap();
@@ -195,6 +334,15 @@ export class LeafletXComponent implements AfterViewInit {
     this.geomanControllers();
     this.customToolbar();
     this.switchBaseLayer();
-    this.getFeatureCollection();
+    this.watermarkConfigurator()
+    this.getFeatureCollectionFromFile();
+    this.drawInputFeatureCollectionIntoMap();
+    this.mapEventsHandler();
+    this.cdr.detectChanges();
+  }
+
+  ngOnInit(): void {
+    this.mapIdGenerator();
   }
 }
+

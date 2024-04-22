@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { SharedModule } from './shared/shared.module';
-import { LeafletXComponent } from './components/leaflet-x/leaflet-x.component'
+import { SharedModule } from '../shared/shared.module';
+import { LeafletXComponent } from './leaflet-x/leaflet-x.component'
 
 
 

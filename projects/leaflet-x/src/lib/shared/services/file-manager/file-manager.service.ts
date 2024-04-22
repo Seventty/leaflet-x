@@ -4,10 +4,9 @@ import * as topojson from "topojson-client";
 import * as toGeoJson from "@tmcw/togeojson";
 import { ToastService } from '../toast/toast.service';
 import * as osmtogeojsonModule from 'osmtogeojson';
-import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson'
+import { GeoJsonResult } from '../../types/geoJsonResult.type';
 import { GeoJsonNormalize } from '../../utils/geoJsonNormalize';
 
-type GeoJsonResult = FeatureCollection<Geometry | null, GeoJsonProperties>;
 @Injectable({
   providedIn: 'root'
 })
@@ -19,7 +18,7 @@ export class FileManagerService {
 
   constructor(private toastService: ToastService) { }
 
-  public getFeatureCollection(): Observable<GeoJsonResult>{
+  public getFileFeatureCollection(): Observable<GeoJsonResult>{
     return this.$featureCollection.asObservable()
   }
 
