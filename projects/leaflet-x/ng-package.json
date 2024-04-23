@@ -18,6 +18,8 @@
     "topojson-server",
     "shp-write",
     "uuid",
+    "geojson2dsv",
+    "wellknown",
     "@types/file-saver",
     "@types/jasmine",
     "@types/leaflet",

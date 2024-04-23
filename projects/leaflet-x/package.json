@@ -1,6 +1,6 @@
 {
   "name": "@seventty/leaflet-x",
-  "version": "0.0.13",
+  "version": "1.0.0",
   "dependencies": {
     "tslib": "^2.3.0",
     "@geoman-io/leaflet-geoman-free": "^2.16.0",
