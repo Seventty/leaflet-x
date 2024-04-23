@@ -28,7 +28,7 @@ export class MapComponent implements AfterViewInit {
 
   @ViewChild("fileManagerModal") fileManagerModal?: ModalComponent
   @ViewChild("fileExportModal") fileExportModal?: ModalComponent
-  @Input() prefix: string = '';
+  @Input() prefix: string = 'Thank you for using <a href="https://www.npmjs.com/package/@seventty/leaflet-x">LeafletX</a>, give me a ⭐ in <a href="https://github.com/Seventty/leaflet-angular-base">Github</a>';
   @Input() watermarkImagePath: string = '';
   @Input() featureCollectionInput?: GeoJsonResult;
   @Input() readonly: boolean = false;
