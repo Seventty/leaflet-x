@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { ComponentsModule } from './components/components.module';
 import { LeafletXModule } from 'LeafletX';
 
 @NgModule({
