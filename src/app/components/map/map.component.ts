@@ -11,6 +11,7 @@ import { Watermark } from 'src/app/shared/utils/watermark.control';
 import { GeoJsonResult } from 'src/app/shared/types/geoJsonResult.type';
 import { v4 as uuidv4 } from 'uuid';
 import { HexColorType } from 'src/app/shared/types/hexColor.type';
+import { IStylizeDraw } from 'src/app/shared/interfaces/IStylizeDraw';
 
 @Component({
   selector: 'app-map',
@@ -172,6 +173,21 @@ export class MapComponent implements AfterViewInit {
   }
 
   /**
+  * Paint the imported or input shapes
+  * @private
+  * @returns {IStylizeDraw}
+  */
+  private stylizeDraw(drawColor): IStylizeDraw {
+    const colorConfigurator: IStylizeDraw = {
+      fillColor: drawColor,
+      weight: 3,
+      color: drawColor,
+      fillOpacity: 0.4
+    }
+    return colorConfigurator;
+  }
+
+  /**
   * Configures a custom toolbar for the map.
   * @private
   * @returns {void}
@@ -271,7 +287,7 @@ export class MapComponent implements AfterViewInit {
   */
   private renderFeatureCollectionToMap(featureCollection: GeoJsonResult) {
     if (this.map) {
-      L.geoJSON(featureCollection).addTo(this.map);
+      L.geoJSON(featureCollection, { style: this.stylizeDraw(this.mainColor) }).addTo(this.map);
       this.featureCollectionUpdate();
     }
   }
