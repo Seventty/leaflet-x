@@ -7,6 +7,7 @@
     "build": "ng build LeafletX --configuration=production",
     "prod-watch": "ng build LeafletX --configuration=production --watch",
     "publish": "npm publish ./dist/leaflet-x",
+    "deploy": "npm run build && npm publish ./dist/leaflet-x",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
