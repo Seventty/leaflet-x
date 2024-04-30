@@ -102,18 +102,26 @@ To integrate LeafletX we will not need many steps, follow the steps below to con
 
 ### Installation
 
-1. Install the dependency  [Leaflet-x]([Leaflet-x](https://www.npmjs.com/package/@seventty/leaflet-x))
+1. Install the dependency [Leaflet-x](<[Leaflet-x](https://www.npmjs.com/package/@seventty/leaflet-x)>)
 2. Use the command
    ```npm
    npm install @seventty/leaflet-x
    ```
-3. Install NPM packages
-   ```sh
-   npm install
+3. Add the _LeafletXModule_ into your component module imports section.
+   ```ts
+   @NgModule({
+   declarations: [
+    AppComponent,
+   ],
+   imports: [
+    LeafletXModule
+   ],
+   providers: [],
+   })
    ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = "ENTER YOUR API";
+4. Use it in your component as well as common custom component.
+   ```html
+   <leaflet-x></leaflet-x>
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -122,9 +130,26 @@ To integrate LeafletX we will not need many steps, follow the steps below to con
 
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+leaflet-x is quite flexible and was developed thinking about most of the needs that may arise when working with maps. Here are some of the inputs and modules:
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+### Inputs / Outputs
+
+| Decorator | Name                    | Type          | Description                                                                                                                                                                                                                                                                                                                                                                    |
+| --------- | ----------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| @Input    | featureCollectionInput  | GeoJsonResult | This @Input receives an object of type GeoJsonResult, which is nothing more than the structure of a FeatureCollection or a GeoJson, you could say that it is the same structure of a drawing object that is already exported in GeoJson format. You can see such an object if you draw a figure and export it with the export file module and export a GeoJson of the drawing. |
+| @Input    | prefix                  | string        | This will write a footer on the map, it is often used to put @copyright messages.                                                                                                                                                                                                                                                                                              |
+| @Input    | watermarkImagePath      | string        | This @Input receives a path (preferably from the assets folder) in which you can call an image you have in that folder, to draw the image on the map (preferably an image with transparency).                                                                                                                                                                                  |
+| @Input    | readonly                | boolean       | Enable or disable the toolbar utility to draw or not.                                                                                                                                                                                                                                                                                                                          |
+| @Input    | mainColor               | #{string}     | Set this input if you want to set a shape color. Blue shape color is default, but you can set a custom color, eg: **#ffcc66**                                                                                                                                                                                                                                                  |
+| @Output   | featureCollectionOutput | GeoJsonResult | This is part of I/O mainstream, emits every action made in the map                                                                                                                                                                                                                                                                                                             |
+
+Example
+
+```html
+<leaflet-x prefix="@Copyright give me a star in GH" watermarkImagePath="assets/exampleImage.png" mainColor="#00ff00" (featureCollectionOutput)="watchFeatureCollectionOutput($event)"></leaflet-x>
+```
+
+### Modules
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -132,13 +157,15 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 ## Roadmap
 
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
+- [x] Custom toolbar
+- [x] Map events emitter
+- [x] Input/Output file/s modules
+- [x] Custom base layer switcher
 - [ ] Multi-language Support
+  - [ ] English
   - [ ] Chinese
-  - [ ] Spanish
+  - [ ] Portuguese
+  - [ ] Russian
 
 See the [open issues](https://github.com/seventty/leaflet-x/issues) for a full list of proposed features (and known issues).
 
