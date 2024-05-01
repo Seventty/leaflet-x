@@ -155,7 +155,7 @@ export class MapComponent implements AfterViewInit {
           editControls: true,
         });
 
-        //this.map.pm.setLang('es');
+        this.map.pm.setLang('es');
 
         this.map.on('pm:create', (e: any) => {
           this.featureGroup?.addLayer(e.layer);
