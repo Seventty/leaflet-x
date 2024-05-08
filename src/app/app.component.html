@@ -4,7 +4,7 @@
   <div class="row">
     <div class="col-md-12">
       <div class="top-half">
-        <app-map (featureCollectionOutput)="watchFeatureCollection($event)" mainColor="#000000"></app-map>
+        <app-map [defaultInitMapCoords]="defaultInitMapCoords" [defaultZoomLevel]="8" (featureCollectionOutput)="watchFeatureCollection($event)" mainColor="#000000"></app-map>
         <!-- <leaflet-x (featureCollectionOutput)="watchFeatureCollection($event)"></leaflet-x> -->
       </div>
     </div>

@@ -19,22 +19,27 @@ import { IStylizeDraw } from 'src/app/shared/interfaces/IStylizeDraw';
   styleUrls: ['./map.component.scss'],
 })
 export class MapComponent implements AfterViewInit {
+  /* Properties section */
   public mapId: string = 'map';
   private map?: L.Map;
   private featureGroup?: L.FeatureGroup;
-  private defaultMapLocation: L.LatLngExpression = [19.026319, -70.147792]
-  private defaultZoomLevel: number = 8;
   private defaultMaxZoom: number = 18
   private defaultMinZoom: number = 3
 
+  /* Viewchild section */
   @ViewChild("fileManagerModal") fileManagerModal?: ModalComponent
   @ViewChild("fileExportModal") fileExportModal?: ModalComponent
-  @Input() prefix: string = 'Thank you for using <a href="https://www.npmjs.com/package/@seventty/leaflet-x">LeafletX</a>, give me a ⭐ in <a href="https://github.com/Seventty/leaflet-angular-base">Github</a>';
+
+  /* Decorators section */
+  @Input() defaultInitMapCoords: L.LatLngExpression = [ 39.8282, -98.5795 ] // Dominican Republic coords default lat 19.026319 | default lang -70.147792
+  @Input() defaultZoomLevel: number = 5; // Dominican Republic zoom: 8
+  @Input() prefix: string = 'Thank you for using <a href="https://www.npmjs.com/package/@seventty/leaflet-x-legacy">LeafletX</a>, give me a ⭐ in <a href="https://github.com/Seventty/leaflet-angular-base">Github</a>';
   @Input() watermarkImagePath: string = '';
   @Input() featureCollectionInput?: GeoJsonResult;
   @Input() readonly: boolean = false;
   @Input() mainColor: HexColorType = '#00b8e6';
   @Output() featureCollectionOutput: EventEmitter<GeoJsonResult> = new EventEmitter<GeoJsonResult>()
+
 
   featureCollection: GeoJsonResult = {
     type: 'FeatureCollection',
@@ -84,7 +89,7 @@ export class MapComponent implements AfterViewInit {
   */
   private initMap(): void {
     this.map = L.map(this.mapId, {
-      center: this.defaultMapLocation,
+      center: this.defaultInitMapCoords,
       zoom: this.defaultZoomLevel,
       zoomControl: false,
     });

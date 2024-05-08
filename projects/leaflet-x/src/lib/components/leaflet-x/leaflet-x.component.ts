@@ -19,6 +19,7 @@ import { Watermark } from '../../shared/utils/watermark.control';
 })
 
 export class LeafletXComponent implements AfterViewInit {
+  /* Properties section */
   public mapId: string = 'map';
   private map?: L.Map;
   private featureGroup?: L.FeatureGroup;
@@ -27,8 +28,11 @@ export class LeafletXComponent implements AfterViewInit {
   private defaultMaxZoom: number = 18
   private defaultMinZoom: number = 3
 
+  /* ViewChild section */
   @ViewChild("fileManagerModal") fileManagerModal?: ModalComponent
   @ViewChild("fileExportModal") fileExportModal?: ModalComponent
+
+  /* Decorators section */
   @Input() prefix: string = '';
   @Input() watermarkImagePath: string = '';
   @Input() featureCollectionInput?: GeoJsonResult;
