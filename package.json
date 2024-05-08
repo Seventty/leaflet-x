@@ -1,6 +1,7 @@
 {
   "name": "@seventty/leaflet-x",
   "version": "1.0.3",
+  "keywords": ["map", "leaflet", "angular", "toolkit", "superSet"],
   "repository": {
     "type": "git",
     "url": "https://github.com/Seventty/leaflet-x"
