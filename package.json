@@ -1,6 +1,10 @@
 {
-  "name": "@seventty/ngx-leaflet",
+  "name": "@seventty/leaflet-x",
   "version": "1.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Seventty/leaflet-x"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
